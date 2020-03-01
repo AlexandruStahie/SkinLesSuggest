@@ -1,0 +1,150 @@
+import utils
+import numpy as np
+
+import keras
+from keras.callbacks import ReduceLROnPlateau
+from keras.preprocessing.image import ImageDataGenerator
+from keras.optimizers import Adam
+from keras.utils.np_utils import to_categorical
+from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from keras.models import Sequential
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+
+np.random.seed(123)
+inputData = utils.GetInputData()
+
+# Image size distribution
+inputData['image'].map(lambda x: x.shape).value_counts()
+
+# What we know
+features = inputData.drop(columns=['cellTypeId'], axis=1)
+# What we want to predict
+target = inputData['cellTypeId']
+
+
+xTrainSplit, xTestSplit, yTrainSplit, yTestSplit = train_test_split(
+    features, target, test_size=0.20, random_state=1234)
+
+xTrain = np.asarray(xTrainSplit['image'].tolist())
+xTest = np.asarray(xTestSplit['image'].tolist())
+
+xTrainMean = np.mean(xTrain)
+xTrainStd = np.std(xTrain)
+
+xTestMean = np.mean(xTest)
+xTestStd = np.std(xTest)
+
+xTrain = (xTrain - xTrainMean)/xTrainStd
+xTest = (xTest - xTestMean)/xTestStd
+
+
+# Perform one-hot encoding on the labels
+yTrain = to_categorical(yTrainSplit, num_classes=7)
+yTest = to_categorical(yTestSplit, num_classes=7)
+
+
+xTrain, xValidate, yTrain, yValidate = train_test_split(
+    xTrain, yTrain, test_size=0.1, random_state=2)
+
+# Reshape image in 3 dimensions (height = 75px, width = 100px, canal = 3 RGB)
+xTrain = xTrain.reshape(xTrain.shape[0], *(75, 100, 3))
+xTest = xTest.reshape(xTest.shape[0], *(75, 100, 3))
+xValidate = xValidate.reshape(xValidate.shape[0], *(75, 100, 3))
+
+
+# CNN model
+# CNN architechture
+# [[Conv2D->relu]*2 -> MaxPool2D -> Dropout]*2 -> Flatten -> Dense -> Dropout -> Out
+inputShape = (75, 100, 3)
+numClasses = 7
+
+model = Sequential()
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu',
+                 padding='Same', input_shape=inputShape))
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same',))
+model.add(MaxPool2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+model.add(MaxPool2D(pool_size=(2, 2)))
+model.add(Dropout(0.40))
+
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(numClasses, activation='softmax'))
+model.summary()
+
+
+# Define the optimizer
+optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
+                 epsilon=None, decay=0.0, amsgrad=False)
+
+# Compile the model
+
+model.compile(optimizer=optimizer,
+              loss="categorical_crossentropy",
+              metrics=['accuracy', utils.CalculateF1Score])
+
+# Set a learning rate reductor
+learningRateReduction = ReduceLROnPlateau(
+    monitor='val_acc', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
+
+# With data augmentation to prevent overfitting
+datagen = ImageDataGenerator(
+    featurewise_center=False,
+    samplewise_center=False,
+    featurewise_std_normalization=False,
+    samplewise_std_normalization=False,
+    zca_whitening=False,
+    rotation_range=10,
+    zoom_range=0.1,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    horizontal_flip=False,
+    vertical_flip=False)
+datagen.fit(xTrain)
+
+
+# Fit the model (50 epochs with batch size as 10)
+epochs = 50
+batchSize = 10
+history = model.fit_generator(datagen.flow(xTrain, yTrain, batch_size=batchSize),
+                              epochs=epochs, validation_data=(
+                                  xValidate, yValidate),
+                              verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
+                              callbacks=[learningRateReduction])
+
+
+print(model.metrics_names)
+
+loss, accuracy, f1Score = model.evaluate(
+    xTest, yTest, verbose=1)
+
+lossVal, accuracyVal, f1ScoreVal = model.evaluate(
+    xValidate, yValidate, verbose=1)
+
+
+utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
+utils.PrintTestStats(accuracy, loss, f1Score)
+
+model.save("models/cnn/CNNModel_epochs{0}.h5".format(epochs))
+utils.PlotTrainEvolutionHistory(history)
+
+
+# Model validation predictions
+yPred = model.predict(xValidate)
+# Transform validation predictions classes to one hot vectors
+yPredClasses = np.argmax(yPred, axis=1)
+# Transform validation target to one hot vectors
+yTrue = np.argmax(yValidate, axis=1)
+# Create confusion matrix
+confusionMatrix = confusion_matrix(yTrue, yPredClasses)
+# Plot the confusion matrix
+utils.PlotConfusionMatrix(confusionMatrix, range(7))
+
+
+utils.PlotFractionClassifiedIncorrectly(confusionMatrix)
