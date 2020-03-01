@@ -13,10 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
 np.random.seed(123)
-inputData = utils.GetInputData()
-
-# Image size distribution
-inputData['image'].map(lambda x: x.shape).value_counts()
+inputData = utils.GetInputData((100, 75))
 
 # What we know
 features = inputData.drop(columns=['cellTypeId'], axis=1)
@@ -49,20 +46,21 @@ xTrain, xValidate, yTrain, yValidate = train_test_split(
     xTrain, yTrain, test_size=0.1, random_state=2)
 
 # Reshape image in 3 dimensions (height = 75px, width = 100px, canal = 3 RGB)
-xTrain = xTrain.reshape(xTrain.shape[0], *(75, 100, 3))
-xTest = xTest.reshape(xTest.shape[0], *(75, 100, 3))
-xValidate = xValidate.reshape(xValidate.shape[0], *(75, 100, 3))
+imageSize = (75, 100, 3)
+xTrain = xTrain.reshape(xTrain.shape[0], *imageSize)
+xTest = xTest.reshape(xTest.shape[0], *imageSize)
+xValidate = xValidate.reshape(xValidate.shape[0], *imageSize)
 
 
-# CNN model
-# CNN architechture
-# [[Conv2D->relu]*2 -> MaxPool2D -> Dropout]*2 -> Flatten -> Dense -> Dropout -> Out
-inputShape = (75, 100, 3)
+# CNN model architechture
+# [Conv2D->relu (32)]*2 -> MaxPool2D -> Dropout]
+# [Conv2D->relu (64)]*2 -> MaxPool2D -> Dropout]
+# Flatten -> Dense -> Dropout -> Out
 numClasses = 7
 
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3), activation='relu',
-                 padding='Same', input_shape=inputShape))
+                 padding='Same', input_shape=imageSize))
 model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same',))
 model.add(MaxPool2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
@@ -84,7 +82,6 @@ optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
                  epsilon=None, decay=0.0, amsgrad=False)
 
 # Compile the model
-
 model.compile(optimizer=optimizer,
               loss="categorical_crossentropy",
               metrics=['accuracy', utils.CalculateF1Score])
@@ -119,7 +116,7 @@ history = model.fit_generator(datagen.flow(xTrain, yTrain, batch_size=batchSize)
                               callbacks=[learningRateReduction])
 
 
-print(model.metrics_names)
+print('Model metrics name: {0}'.format(model.metrics_names))
 
 loss, accuracy, f1Score = model.evaluate(
     xTest, yTest, verbose=1)
@@ -144,7 +141,7 @@ yTrue = np.argmax(yValidate, axis=1)
 # Create confusion matrix
 confusionMatrix = confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
-utils.PlotConfusionMatrix(confusionMatrix, range(7))
+utils.PlotConfusionMatrix(confusionMatrix)
 
 
 utils.PlotFractionClassifiedIncorrectly(confusionMatrix)

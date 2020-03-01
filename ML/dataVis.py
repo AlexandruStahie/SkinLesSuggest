@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 np.random.seed(123)
-inputData = utils.GetInputData()
+inputData = utils.GetInputData((100, 75))
 
 # Plot 4 graphics with different data statistics from csv input
 plt.figure(figsize=(20, 14))
