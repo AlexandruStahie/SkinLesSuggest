@@ -8,7 +8,7 @@ from .LabelsDictionary import labelDictionary
 
 
 # Read Images and Data related to it
-def GetInputData():
+def GetInputData(resizeDims):
     inputDirectory = os.path.join('input')
 
     # Get images from both folders HAM10000_images_part1 and HAM10000_images_part2
@@ -34,7 +34,15 @@ def GetInputData():
 
     # Read and resize images
     inputData['image'] = inputData['path'].map(
-        lambda x: np.asarray(Image.open(x).resize((100, 75))))
+        lambda x: np.asarray(Image.open(x).resize(resizeDims)))
+
+    # Print image shape info
+    print('image shape info after read images: {0}'.format(
+        inputData['image'].map(lambda x: x.shape).value_counts()))
+
+    # Get general statistics for the dataset
+    print('input describe: {0}'.format(
+        inputData.describe(exclude=[np.number])))
 
     return inputData
 

@@ -35,7 +35,7 @@ def PlotTrainEvolutionHistory(trainHistory):
 
 
 # Function to plot confusion matrix
-def PlotConfusionMatrix(confusionMatrix, classes):
+def PlotConfusionMatrix(confusionMatrix, classes=range(7)):
     plt.imshow(confusionMatrix, interpolation='nearest', cmap=plt.cm.Blues)
     plt.title('Confusion matrix')
     plt.colorbar()
