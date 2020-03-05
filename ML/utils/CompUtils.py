@@ -25,7 +25,7 @@ def GetInputData(resizeDims):
     inputData['cellTypeId'] = pd.Categorical(inputData['cellType']).codes
 
     # Dispaly a sample of data
-    inputData.head()
+    # print('Input data head: {0}'.format(inputData.head()))
 
     # Replace null ages with a mean of other age fields
     inputData.isnull().sum()
@@ -37,14 +37,27 @@ def GetInputData(resizeDims):
         lambda x: np.asarray(Image.open(x).resize(resizeDims)))
 
     # Print image shape info
-    print('image shape info after read images: {0}'.format(
-        inputData['image'].map(lambda x: x.shape).value_counts()))
+    # print('image shape info after read images: {0}'.format(
+    #     inputData['image'].map(lambda x: x.shape).value_counts()))
 
     # Get general statistics for the dataset
-    print('input describe: {0}'.format(
-        inputData.describe(exclude=[np.number])))
+    # print('input describe: {0}'.format(
+    #     inputData.describe(exclude=[np.number])))
 
     return inputData
+
+
+# Normalization per each channel
+def ResNetNormImages(images):
+    images = np.asarray(images).astype(np.float64)
+    images = images[:, :, :, ::-1]
+    m0 = np.mean(images[:, :, :, 0])
+    m1 = np.mean(images[:, :, :, 1])
+    m2 = np.mean(images[:, :, :, 2])
+    images[:, :, :, 0] -= m0
+    images[:, :, :, 1] -= m1
+    images[:, :, :, 2] -= m2
+    return images
 
 
 # Function to calculate the F1 score - taken from keras old implementation

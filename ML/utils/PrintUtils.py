@@ -27,9 +27,9 @@ def PrintClassesInfo(inputData):
 def PrintValidationStats(accuracyVal, lossVal, f1ScoreVal):
     print(
         """
-          Validation accuracy = %f  ;  
+          Validation accuracy = %f ;  
           Validation loss = %f ; 
-          Validation F1 scoare = %f"  
+          Validation F1 scoare = %f" ; 
         """ %
         (accuracyVal, lossVal, f1ScoreVal)
     )
@@ -41,7 +41,7 @@ def PrintTestStats(accuracy, loss, f1Score):
         """
           Test accuracy = %f  ;  
           Test loss = %f ; 
-          Test F1 scoare = %f" 
+          Test F1 scoare = %f" ;
         """ %
         (accuracy, loss, f1Score)
     )
