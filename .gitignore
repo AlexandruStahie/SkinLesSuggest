@@ -1,3 +1,23 @@
+#ML Ignored Files
 /ML/input
 /ML/utils/__pycache__
 /ML/models/resNet50/ResNet50Model_epochs30.h5
+
+#Server Ignored Files
+/Server/SkinLesSuggest/appsettings.Development.json
+/Server/SkinLesSuggest/appsettings.json
+
+# Visual Studio 2015 cache/options directory
+.vs/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
