@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
-import CustomTextInput from '../../Components/CustomTextInput';
-import CustomButton from '../../Components/CustomButton';
 import styles from './style';
+import CustomTextInput from '../../components/CustomTextInput';
+import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
 import { isNil } from '../../utils/functions';
 
