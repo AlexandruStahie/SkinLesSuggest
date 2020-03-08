@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Login from './Containers/Login';
+import Login from './containers/Login';
 import colors from './utils/colors';
 
 const App = () => (
