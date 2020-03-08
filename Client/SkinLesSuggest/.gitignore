@@ -1,30 +1,25 @@
-#ML ignored files
-/ML/input
-/ML/utils/__pycache__
-/ML/models/resNet50/ResNet50Model_epochs30.h5
+# OSX
+#
+.DS_Store
 
-#Server ignored files
-/Server/SkinLesSuggest/appsettings.Development.json
-/Server/SkinLesSuggest/appsettings.json
-
-#Client ignored files
-/Client/SkinLesSuggest/node_modules
-
-# Visual Studio 2015 cache/options directory
-.vs/
-
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
 
 # Android/IntelliJ
 #
