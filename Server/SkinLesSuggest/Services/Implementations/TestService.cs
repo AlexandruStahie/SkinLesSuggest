@@ -19,8 +19,16 @@ namespace SkinLesSuggest.Services.Implementations
 
         public async Task AddTestRecord()
         {
-            Test test = new Test() { Id = Guid.NewGuid() };
-            await _dbContext.Tests.AddAsync(test);
+            Test test = new Test() { 
+                Id = Guid.NewGuid(),
+                MigrationTest = "Test"
+            };
+
+            TestDetail testDetail = new TestDetail() { 
+                Test = test
+            };
+
+            await _dbContext.TestDetails.AddAsync(testDetail);
             await _dbContext.SaveChangesAsync();
         }
     }

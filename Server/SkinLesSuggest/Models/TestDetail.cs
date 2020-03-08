@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace SkinLesSuggest.Models
 {
-    public class Test
+    public class TestDetail
     {
         public Guid Id { get; set; }
-        public string MigrationTest { get; set; }
+        public Guid TestId { get; set; }
+
+        public virtual Test Test { get; set; }
     }
 }
