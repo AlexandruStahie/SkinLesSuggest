@@ -23,7 +23,6 @@ namespace SkinLesSuggest.Controllers
         public async Task<ActionResult> Test()
         {
             await _testService.AddTestRecord();
-
             return Ok();
         }
     }

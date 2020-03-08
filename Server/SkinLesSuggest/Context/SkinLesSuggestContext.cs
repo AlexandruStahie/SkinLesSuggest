@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SkinLesSuggest.Context.Configurations;
 using SkinLesSuggest.Models;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,14 @@ namespace SkinLesSuggest.Context
     {
         public SkinLesSuggestContext(DbContextOptions<SkinLesSuggestContext> options) : base(options) { }
 
-
         public DbSet<Test> Tests { get; set; }
-
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
-        { 
-
-        }
+        public DbSet<TestDetail> TestDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Test>().ToTable("Tests");
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new TestTypeConfig());
+            modelBuilder.ApplyConfiguration(new TestDetailTypeConfig());
         }
     }
 }
