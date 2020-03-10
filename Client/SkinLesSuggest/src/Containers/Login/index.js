@@ -12,8 +12,8 @@ const defaultErrors = {
 };
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('test@test.com');
+  const [password, setPassword] = useState('test');
   const [dynamicValidate, setDynamicValidate] = useState(false);
   const [errors, setErrors] = useState(defaultErrors);
 
