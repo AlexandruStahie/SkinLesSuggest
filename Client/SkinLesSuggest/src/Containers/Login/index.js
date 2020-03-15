@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import styles from './style';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
@@ -44,6 +45,14 @@ const Login = () => {
     }
   };
 
+  const goToRegisterScreen = () => {
+    Navigation.push('Login', {
+      component: {
+        name: 'Register',
+      }
+    });
+  };
+
   const setField = (field, value) => {
     switch (field) {
       case 'email':
@@ -76,33 +85,35 @@ const Login = () => {
 
   const contentToRender = (
     <>
-      <Text style={styles.logo}>SkinLesSuggest</Text>
-      <CustomTextInput
-        showError={errors}
-        value={email}
-        name="email"
-        placeholder="Email..."
-        setField={setField}
-      />
-      <CustomTextInput
-        showError={errors}
-        value={password}
-        name="password"
-        placeholder="Password..."
-        setField={setField}
-        secureTextEntry
-      />
+      <View style={styles.container}>
+        <Text style={styles.logo}>SkinLesSuggest</Text>
+        <CustomTextInput
+          showError={errors}
+          value={email}
+          name="email"
+          placeholder="Email..."
+          setField={setField}
+        />
+        <CustomTextInput
+          showError={errors}
+          value={password}
+          name="password"
+          placeholder="Password..."
+          setField={setField}
+          secureTextEntry
+        />
 
-      <TouchableOpacity>
-        <Text style={styles.forgot}>Forgot Password?</Text>
-      </TouchableOpacity>
-      <CustomButton
-        text="LOGIN"
-        onPress={login}
-      />
-      <TouchableOpacity>
-        <Text style={styles.simpleText}>Signup</Text>
-      </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.forgot}>Forgot Password?</Text>
+        </TouchableOpacity>
+        <CustomButton
+          text="Login"
+          onPress={login}
+        />
+        <TouchableOpacity>
+          <Text style={styles.simpleText} onPress={goToRegisterScreen}>Register</Text>
+        </TouchableOpacity>
+      </View>
     </>
   );
 

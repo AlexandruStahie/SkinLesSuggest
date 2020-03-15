@@ -1,34 +1,26 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-underscore-dangle */
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import Login from './containers/Login';
-import colors from './utils/colors';
+import React, { useEffect } from 'react';
+import { Text } from 'react-native';
+import { GoToHomeScreen } from '../navigation';
 
-// Debug Options
-console.disableYellowBox = true;
+const App = () => {
+  useEffect(() => {
+    /*
+      // check if async storage has token and is not expired
+      if (all ok){
+        GoToLoggedInHomeScreen()
+      } else {
+        GoToHomeScreen()
+      }
+    */
+    GoToHomeScreen();
+  }, []);
 
-// To see all the requests in the chrome Dev tools in the network tab.
-const _XHR = GLOBAL.originalXMLHttpRequest
-  ? GLOBAL.originalXMLHttpRequest
-  : GLOBAL.XMLHttpRequest;
-XMLHttpRequest = _XHR;
-
-const App = () => (
-  <>
-    <View style={styles.container}>
-      <Login />
-    </View>
-  </>
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-});
+  const contetnToRender = (
+    <>
+      <Text>Loading</Text>
+    </>
+  );
+  return contetnToRender;
+};
 
 export default App;
