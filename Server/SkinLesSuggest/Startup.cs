@@ -83,7 +83,6 @@ namespace SkinLesSuggest
 
             app.UseSwagger();
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
