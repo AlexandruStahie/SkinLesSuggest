@@ -12,9 +12,9 @@ const defaultErrors = {
   password: false,
 };
 
-const Login = () => {
-  const [email, setEmail] = useState('test@test.com');
-  const [password, setPassword] = useState('test');
+const Register = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [dynamicValidate, setDynamicValidate] = useState(false);
   const [errors, setErrors] = useState(defaultErrors);
 
@@ -28,7 +28,7 @@ const Login = () => {
     if (dynamicValidate === false) { setDynamicValidate(true); }
 
     if (validateFields()) {
-      const endpoint = '/User/authenticate';
+      const endpoint = '/User/register';
       const userData = {
         email, password
       };
@@ -36,10 +36,10 @@ const Login = () => {
       post(endpoint, userData)
         .then((response) => response.data)
         .then((response) => {
-          console.log('loginResponse: ', response);
+          console.log('registerResponse: ', response);
         })
         .catch((err) => {
-          console.log('loginError', err);
+          console.log('registerError', err);
         });
     }
   };
@@ -93,20 +93,14 @@ const Login = () => {
         secureTextEntry
       />
 
-      <TouchableOpacity>
-        <Text style={styles.forgot}>Forgot Password?</Text>
-      </TouchableOpacity>
       <CustomButton
-        text="LOGIN"
+        text="Sign Up"
         onPress={login}
       />
-      <TouchableOpacity>
-        <Text style={styles.simpleText}>Signup</Text>
-      </TouchableOpacity>
     </>
   );
 
   return contentToRender;
 };
 
-export default Login;
+export default Register;

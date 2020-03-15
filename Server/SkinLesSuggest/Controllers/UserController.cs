@@ -24,10 +24,22 @@ namespace SkinLesSuggest.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] UserViewModel model)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserViewModel model)
         {
-            var user = _userService.Authenticate(model.Email, model.Password);
+            bool emailExists = await _userService.CheckDuplicateEmail(model.Email);
+            if (emailExists)
+                return new JsonResult(new { error = true, message = "An User already exists with this email!"});
+
+            await _userService.Register(model.Email, model.Password);
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody] UserViewModel model)
+        {
+            var user = await _userService.Authenticate(model.Email, model.Password);
             if (user == null)
                 return BadRequest(new { message = "Email or password is incorrect" });
 
