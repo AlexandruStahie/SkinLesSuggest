@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import styles from './style';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
@@ -12,11 +13,21 @@ const defaultErrors = {
   password: false,
 };
 
-const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Register = ({ componentId }) => {
+  const [email, setEmail] = useState('test@test.com');
+  const [password, setPassword] = useState('test');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const [dynamicValidate, setDynamicValidate] = useState(false);
   const [errors, setErrors] = useState(defaultErrors);
+
+  useEffect(() => {
+    setEmail('test@test.com');
+    setPassword('test');
+    setErrorMessage('');
+    setDynamicValidate(false);
+    setErrors(defaultErrors);
+  }, []);
 
   useEffect(() => {
     if (dynamicValidate === true) {
@@ -25,7 +36,9 @@ const Register = () => {
   }, [email, password]);
 
   const register = () => {
-    if (dynamicValidate === false) { setDynamicValidate(true); }
+    if (dynamicValidate === false) {
+      setDynamicValidate(true);
+    }
 
     if (validateFields()) {
       const endpoint = '/User/register';
@@ -36,10 +49,24 @@ const Register = () => {
       post(endpoint, userData)
         .then((response) => response.data)
         .then((response) => {
-          console.log('registerResponse: ', response);
+          if (response && response.error && response.message) {
+            setErrorMessage(response.message);
+          } else {
+            Navigation.push(componentId, {
+              component: {
+                name: 'Login',
+                passProps: {
+                  newEmail: email,
+                  newPass: password,
+                }
+              },
+            });
+          }
         })
         .catch((err) => {
           console.log('registerError', err);
+          const errorMsg = 'Something went wrong, please try again!';
+          setErrorMessage(errorMsg);
         });
     }
   };
@@ -94,6 +121,7 @@ const Register = () => {
           setField={setField}
           secureTextEntry
         />
+        <Text style={styles.errorMessage}>{errorMessage}</Text>
 
         <CustomButton
           text="Register"

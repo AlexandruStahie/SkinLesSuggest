@@ -1,35 +1,32 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import jwtDecode from 'jwt-decode';
 
-const storeData = async (objToStore) => {
-  const objToStoreKeys = Object.keys(objToStore);
+const storeToken = async (token) => {
+  const decodedToken = jwtDecode(decodeURIComponent(token));
   const promises = [];
 
-  objToStoreKeys.forEach((key) => {
-    promises.push(AsyncStorage.setItem(key, objToStore[key]));
-  });
+  promises.push(AsyncStorage.setItem('token', token));
+  promises.push(AsyncStorage.setItem('id', decodedToken.nameid));
+  promises.push(AsyncStorage.setItem('email', decodedToken.email));
 
-  Promise.all(promises).then((values) => {
-    console.log(values);
-  });
+  Promise.all(promises);
 };
 
-// const getData = async (keys) => {
-//   try {
-//     const value = await AsyncStorage.getItem('@storage_Key');
-//     if (value !== null) {
-//       // value previously stored
-//     }
-//   } catch (e) {
-//     // error reading value
-//   }
-// };
+const getData = async (key) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    return value;
+  } catch (e) {
+    return null;
+  }
+};
 
 const clearStore = async () => {
   AsyncStorage.clear();
 };
 
 export {
-  storeData,
-  //   getData,
+  storeToken,
+  getData,
   clearStore
 };

@@ -21,18 +21,6 @@ const parseErrors = (error) => error;
 
 const handleErrors = (errors) => {
   console.log('errors: ', errors);
-  //   if (idx(errors, (_) => _.response.status) === 401) {
-  //     // logout
-  //   }
-
-  //   // check if token is expired
-  // //   const token = jwtDecode(decodeURIComponent(userToken));
-  // //   const { exp } = token;
-  // //   const reqExp = decodedJWT.exp;
-
-//   if (Math.min(exp, reqExp) < new Date().getTime() / 1000) {
-//     // logout
-//   }
 };
 
 const setHeader = (headerName, headerValue) => {

@@ -8,14 +8,7 @@ const Home = ({ componentId }) => {
   const goToScreen = (screenName) => {
     Navigation.push(componentId, {
       component: {
-        name: screenName,
-        options: {
-          topBar: {
-            title: {
-              text: screenName
-            }
-          }
-        }
+        name: screenName
       }
     });
   };

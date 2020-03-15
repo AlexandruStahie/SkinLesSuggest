@@ -6,6 +6,7 @@ const RegisterScreens = () => {
   Navigation.registerComponent('Home', () => require('./src/containers/Home').default);
   Navigation.registerComponent('Login', () => require('./src/containers/Login').default);
   Navigation.registerComponent('Register', () => require('./src/containers/Register').default);
+  Navigation.registerComponent('Menu', () => require('./src/containers/Menu').default);
 };
 
 Navigation.setDefaultOptions({
@@ -19,6 +20,12 @@ Navigation.setDefaultOptions({
     pop: {
       enabled: 'false'
     }
+  },
+  topBar: {
+    // elevation: 0,
+    visible: false,
+    drawBehind: true,
+    animate: false,
   }
 });
 
@@ -37,7 +44,23 @@ const GoToHomeScreen = () => Navigation.setRoot({
   }
 });
 
+const GoToMenuScreen = () => Navigation.setRoot({
+  root: {
+    stack: {
+      id: 'App',
+      children: [
+        {
+          component: {
+            name: 'Menu'
+          },
+        }
+      ],
+    }
+  }
+});
+
 export {
   RegisterScreens,
-  GoToHomeScreen
+  GoToHomeScreen,
+  GoToMenuScreen
 };
