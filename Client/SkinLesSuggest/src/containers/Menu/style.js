@@ -14,15 +14,4 @@ export default StyleSheet.create({
     color: colors.customGreen,
     marginBottom: 40
   },
-  forgot: {
-    color: colors.black,
-    fontSize: 11
-  },
-  simpleText: {
-    color: colors.black,
-  },
-  errorMessage: {
-    color: colors.red,
-    fontSize: 15
-  }
 });

@@ -20,5 +20,9 @@ export default StyleSheet.create({
   },
   simpleText: {
     color: colors.black,
+  },
+  errorMessage: {
+    color: colors.red,
+    fontSize: 15
   }
 });

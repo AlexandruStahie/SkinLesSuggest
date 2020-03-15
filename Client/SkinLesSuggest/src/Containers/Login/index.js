@@ -6,18 +6,30 @@ import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
 import { isNil } from '../../utils/functions';
-import { post } from '../../utils/requests';
+import { post, setHeader } from '../../utils/requests';
+import { GoToMenuScreen } from '../../../navigation';
+import { storeToken } from '../../utils/localStorage';
 
 const defaultErrors = {
   email: false,
   password: false,
 };
 
-const Login = () => {
+const Login = ({ componentId, newEmail, newPass }) => {
   const [email, setEmail] = useState('test@test.com');
   const [password, setPassword] = useState('test');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const [dynamicValidate, setDynamicValidate] = useState(false);
   const [errors, setErrors] = useState(defaultErrors);
+
+  useEffect(() => {
+    setEmail(newEmail || 'test@test.com');
+    setPassword(newPass || 'test');
+    setErrorMessage('');
+    setDynamicValidate(false);
+    setErrors(defaultErrors);
+  }, []);
 
   useEffect(() => {
     if (dynamicValidate === true) {
@@ -37,10 +49,18 @@ const Login = () => {
       post(endpoint, userData)
         .then((response) => response.data)
         .then((response) => {
-          console.log('loginResponse: ', response);
+          if (response && response.error && response.message) {
+            setErrorMessage(response.message);
+          } else {
+            storeToken(response);
+            setHeader('Authorization', `Bearer ${response}`);
+            GoToMenuScreen();
+          }
         })
         .catch((err) => {
-          console.log('loginError', err);
+          console.log('registerError', err);
+          const errorMsg = 'Something went wrong, please try again!';
+          setErrorMessage(errorMsg);
         });
     }
   };
@@ -106,6 +126,8 @@ const Login = () => {
         <TouchableOpacity>
           <Text style={styles.forgot}>Forgot Password?</Text>
         </TouchableOpacity>
+
+        <Text style={styles.errorMessage}>{errorMessage}</Text>
         <CustomButton
           text="Login"
           onPress={login}

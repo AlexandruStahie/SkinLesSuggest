@@ -43,19 +43,13 @@ namespace SkinLesSuggest.Controllers
             if (user == null)
                 return BadRequest(new { message = "Email or password is incorrect" });
 
-            return Ok(user);
+            return Ok(user.Token);
         }
 
         [HttpGet("testAuth")]
         public IActionResult TestAuth()
         {
-             List<User> users = new List<User>
-            {
-                new User { Id = Guid.NewGuid(), Email = "Test1", Password = "test1"},
-                new User { Id = Guid.NewGuid(), Email = "Test2", Password = "test2"},
-            };
-
-            return Ok(users);
+            return Ok();
         }
     }
 }
