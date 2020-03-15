@@ -13,6 +13,29 @@ const Home = ({ componentId }) => {
     });
   };
 
+  const goToRegister = () => {
+    Navigation.push(componentId, {
+      component: {
+        name: 'Register',
+        passProps: {
+          goToLoginScreen
+        }
+      }
+    });
+  };
+
+  const goToLoginScreen = (email, pass) => {
+    Navigation.push(componentId, {
+      component: {
+        name: 'Login',
+        passProps: {
+          newEmail: email,
+          newPass: pass,
+        }
+      },
+    });
+  };
+
   const contentToRender = (
     <>
       <View style={styles.container}>
@@ -28,7 +51,7 @@ const Home = ({ componentId }) => {
         />
         <CustomButton
           text="Register"
-          onPress={() => goToScreen('Register')}
+          onPress={goToRegister}
         />
       </View>
     </>
