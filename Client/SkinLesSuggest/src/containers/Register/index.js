@@ -13,7 +13,7 @@ const defaultErrors = {
   password: false,
 };
 
-const Register = ({ componentId }) => {
+const Register = ({ componentId, goToLoginScreen }) => {
   const [email, setEmail] = useState('test@test.com');
   const [password, setPassword] = useState('test');
   const [errorMessage, setErrorMessage] = useState('');
@@ -52,15 +52,11 @@ const Register = ({ componentId }) => {
           if (response && response.error && response.message) {
             setErrorMessage(response.message);
           } else {
-            Navigation.push(componentId, {
-              component: {
-                name: 'Login',
-                passProps: {
-                  newEmail: email,
-                  newPass: password,
-                }
-              },
-            });
+            console.log(goToLoginScreen);
+            Navigation.pop(componentId);
+            if (goToLoginScreen) {
+              goToLoginScreen(email, password);
+            }
           }
         })
         .catch((err) => {
