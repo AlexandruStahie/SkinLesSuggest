@@ -23,6 +23,6 @@ export default StyleSheet.create({
   },
   errorMessage: {
     color: colors.red,
-    fontSize: 15
+    fontSize: 15,
   }
 });

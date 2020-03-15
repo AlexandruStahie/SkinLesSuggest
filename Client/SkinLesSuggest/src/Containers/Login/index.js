@@ -15,7 +15,7 @@ const defaultErrors = {
   password: false,
 };
 
-const Login = ({ componentId, newEmail, newPass }) => {
+const Login = ({ newEmail, newPass }) => {
   const [email, setEmail] = useState('test@test.com');
   const [password, setPassword] = useState('test');
   const [errorMessage, setErrorMessage] = useState('');
