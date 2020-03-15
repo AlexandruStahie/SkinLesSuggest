@@ -13,6 +13,7 @@ export default StyleSheet.create({
     marginBottom: 10
   },
   buttonText: {
-    color: colors.white
+    color: colors.white,
+    fontSize: 18
   },
 });

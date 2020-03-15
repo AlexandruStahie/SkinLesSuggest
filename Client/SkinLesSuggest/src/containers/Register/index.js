@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, View } from 'react-native';
 import styles from './style';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
@@ -24,7 +24,7 @@ const Register = () => {
     }
   }, [email, password]);
 
-  const login = () => {
+  const register = () => {
     if (dynamicValidate === false) { setDynamicValidate(true); }
 
     if (validateFields()) {
@@ -76,27 +76,30 @@ const Register = () => {
 
   const contentToRender = (
     <>
-      <Text style={styles.logo}>SkinLesSuggest</Text>
-      <CustomTextInput
-        showError={errors}
-        value={email}
-        name="email"
-        placeholder="Email..."
-        setField={setField}
-      />
-      <CustomTextInput
-        showError={errors}
-        value={password}
-        name="password"
-        placeholder="Password..."
-        setField={setField}
-        secureTextEntry
-      />
+      <View style={styles.container}>
 
-      <CustomButton
-        text="Sign Up"
-        onPress={login}
-      />
+        <Text style={styles.logo}>SkinLesSuggest</Text>
+        <CustomTextInput
+          showError={errors}
+          value={email}
+          name="email"
+          placeholder="Email..."
+          setField={setField}
+        />
+        <CustomTextInput
+          showError={errors}
+          value={password}
+          name="password"
+          placeholder="Password..."
+          setField={setField}
+          secureTextEntry
+        />
+
+        <CustomButton
+          text="Register"
+          onPress={register}
+        />
+      </View>
     </>
   );
 
