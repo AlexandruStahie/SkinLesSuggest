@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
+import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './style';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
@@ -9,6 +10,7 @@ import { isNil } from '../../utils/functions';
 import { post, setHeader } from '../../utils/requests';
 import { GoToMenuScreen } from '../../../navigation';
 import { storeToken } from '../../utils/localStorage';
+import colors from '../../utils/colors';
 
 const defaultErrors = {
   email: false,
@@ -19,6 +21,7 @@ const Login = ({ newEmail, newPass }) => {
   const [email, setEmail] = useState('test@test.com');
   const [password, setPassword] = useState('test');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const [dynamicValidate, setDynamicValidate] = useState(false);
   const [errors, setErrors] = useState(defaultErrors);
@@ -29,6 +32,7 @@ const Login = ({ newEmail, newPass }) => {
     setErrorMessage('');
     setDynamicValidate(false);
     setErrors(defaultErrors);
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -46,21 +50,25 @@ const Login = ({ newEmail, newPass }) => {
         email, password
       };
 
+      setIsLoading(true);
       post(endpoint, userData)
         .then((response) => response.data)
         .then((response) => {
           if (response && response.error && response.message) {
             setErrorMessage(response.message);
+            setIsLoading(false);
           } else {
             storeToken(response);
             setHeader('Authorization', `Bearer ${response}`);
             GoToMenuScreen();
+            setIsLoading(false);
           }
         })
         .catch((err) => {
           console.log('registerError', err);
           const errorMsg = 'Something went wrong, please try again!';
           setErrorMessage(errorMsg);
+          setIsLoading(false);
         });
     }
   };
@@ -105,6 +113,11 @@ const Login = ({ newEmail, newPass }) => {
 
   const contentToRender = (
     <>
+      <Spinner
+        visible={isLoading}
+        overlayColor="rgba(255, 255, 255, 0.7)"
+        color={colors.customGreen}
+      />
       <View style={styles.container}>
         <Text style={styles.logo}>SkinLesSuggest</Text>
         <CustomTextInput
