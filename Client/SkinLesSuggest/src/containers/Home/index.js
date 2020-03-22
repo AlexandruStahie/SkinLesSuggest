@@ -41,10 +41,10 @@ const Home = ({ componentId }) => {
       <View style={styles.container}>
         <Text style={styles.logo}>SkinLesSuggest</Text>
 
-        {/* <CustomButton
+        <CustomButton
           text="Get Suggestion"
           onPress={() => goToScreen('GetSuggestion')}
-        /> */}
+        />
         <CustomButton
           text="Login"
           onPress={() => goToScreen('Login')}

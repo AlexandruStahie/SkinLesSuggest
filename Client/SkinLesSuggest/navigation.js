@@ -7,6 +7,7 @@ const RegisterScreens = () => {
   Navigation.registerComponent('Login', () => require('./src/containers/Login').default);
   Navigation.registerComponent('Register', () => require('./src/containers/Register').default);
   Navigation.registerComponent('Menu', () => require('./src/containers/Menu').default);
+  Navigation.registerComponent('GetSuggestion', () => require('./src/containers/Form').default);
 };
 
 Navigation.setDefaultOptions({
