@@ -1,3 +1,66 @@
+#ML ignored files
 /ML/input
 /ML/utils/__pycache__
 /ML/models/resNet50/ResNet50Model_epochs30.h5
+
+#Server ignored files
+/Server/SkinLesSuggest/appsettings.Development.json
+/Server/SkinLesSuggest/appsettings.json
+
+#Client ignored files
+/Client/SkinLesSuggest/node_modules
+
+# Visual Studio 2015 cache/options directory
+.vs/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+*.keystore
+!debug.keystore
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+
+# Bundle artifact
+*.jsbundle
+
+# CocoaPods
+/ios/Pods/
+Server/SkinLesSuggest/Properties/PublishProfiles/SkinLesSuggest20200314062341 - Web Deploy.pubxml
+Server/SkinLesSuggest/Properties/PublishProfiles/SkinLesSuggest20200314062341 - Web Deploy.pubxml.user
