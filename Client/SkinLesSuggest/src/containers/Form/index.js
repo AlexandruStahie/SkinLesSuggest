@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-else-return */
 import React, { useState, useEffect } from 'react';
 import {
@@ -7,7 +8,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './style';
 import CustomButton from '../../components/CustomButton';
-import colors from '../../utils/colors';
+import { colors } from '../../utils/consts';
+import { post } from '../../utils/requests';
 
 const Form = () => {
   const [image, setImage] = useState(null);
@@ -78,7 +80,6 @@ const Form = () => {
     switch (source) {
       case 'camera':
         ImagePicker.openCamera(options).then((response) => {
-          console.log('response: ', response);
           setImage(response);
         }).catch((err) => {
           if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert(); }
@@ -86,7 +87,6 @@ const Form = () => {
         break;
       case 'gallery':
         ImagePicker.openPicker(options).then((response) => {
-          console.log('response: ', response);
           setImage(response);
         }).catch((err) => {
           if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert(); }
@@ -102,9 +102,40 @@ const Form = () => {
     Alert.alert('Error', 'Please try again!', [{ text: 'ok', onPress: () => { console.log('Ok pressed'); } }]);
   };
 
+  const getImageBody = () => {
+    const pathV = image.path.split('/');
+    return {
+      uri: image.path,
+      name: pathV[pathV.length - 1],
+      type: image.mime,
+      data: image.data,
+    };
+  };
+
+  //   # 'akiec': 'Actinic keratoses',  # 0
+  // # 'bcc': 'Basal cell carcinoma',  # 1
+  // # 'bkl': 'Benign keratosis-like lesions',  # 2
+  // # 'df': 'Dermatofibroma',  # 3
+  // # 'nv': 'Melanocytic nevi',  # 4
+  // # 'mel': 'Melanoma',  # 5
+  // # 'vasc': 'Vascular lesions'  # 6
+
   const getSuggestion = () => {
     if (image) {
-      console.log('get suggestion');
+      setIsLoading(true);
+      const endpoint = 'http://localhost:5000/predict';
+      const imageBody = getImageBody();
+      const config = { 'Content-Type': 'multipart/form-data' };
+
+      post(endpoint, imageBody, config)
+        .then((response) => {
+          console.log('getSuggestion err: ', response);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log('getSuggestion err: ', error);
+          setIsLoading(false);
+        });
     } else {
       Alert.alert(
         'Error',
@@ -136,17 +167,17 @@ const Form = () => {
         />
 
         {
-        image ? (
-          <Image
-            source={{
-              uri: `data:image/jpeg;base64,${image.data}`,
-            }}
-            style={styles.image}
-            resizeMode="contain"
+          image ? (
+            <Image
+              source={{
+                uri: `data:image/jpeg;base64,${image.data}`,
+              }}
+              style={styles.image}
+              resizeMode="contain"
 
-          />
-        ) : null
-      }
+            />
+          ) : null
+        }
 
       </View>
     </>

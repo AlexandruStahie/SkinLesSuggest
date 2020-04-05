@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, TextInput } from 'react-native';
 import styles from './style';
-import colors from '../../utils/colors';
+import { colors } from '../../utils/consts';
 
 const CustomTextInput = ({
   showError, value, placeholder, name, setField, secureTextEntry

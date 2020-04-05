@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode';
 import { GoToHomeScreen, GoToMenuScreen } from '../navigation';
 import { getData } from './utils/localStorage';
 import { setHeader } from './utils/requests';
-import colors from './utils/colors';
+import { colors } from './utils/consts';
 
 const App = () => {
   useEffect(() => {

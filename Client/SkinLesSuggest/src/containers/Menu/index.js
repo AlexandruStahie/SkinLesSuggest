@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './style';
-import colors from '../../utils/colors';
+import { colors } from '../../utils/consts';
 import { GoToHomeScreen } from '../../../navigation';
 import { clearStore } from '../../utils/localStorage';
 import CustomButton from '../../components/CustomButton';

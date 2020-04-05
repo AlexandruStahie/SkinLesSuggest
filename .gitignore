@@ -10,6 +10,9 @@
 #Client ignored files
 /Client/SkinLesSuggest/node_modules
 
+#Flask model m5
+\Server\Flask\modelTestResNet.h5
+
 # Visual Studio 2015 cache/options directory
 .vs/
 
