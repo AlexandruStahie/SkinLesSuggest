@@ -6,7 +6,7 @@ import styles from './style';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
-import colors from '../../utils/colors';
+import { colors } from '../../utils/consts';
 import { isNil } from '../../utils/functions';
 import { post } from '../../utils/requests';
 

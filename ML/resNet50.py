@@ -78,7 +78,7 @@ model.add(Dropout(0.5))
 model.add(Dense(128, activation="relu", kernel_regularizer=regularizers.l2(0.02)))
 model.add(Dropout(0.5))
 model.add(Dense(numClasses, activation='softmax',
-          kernel_regularizer=regularizers.l2(0.02)))
+                kernel_regularizer=regularizers.l2(0.02)))
 
 for layer in baseModel.layers:
     # freeze the weights of a particular layer
@@ -112,13 +112,13 @@ history = model.fit_generator(data_gen.flow(xTrain, yTrain, batch_size=batchSze)
                               epochs=epochs, validation_data=(
                                   xValidate, yValidate),
                               verbose=1, steps_per_epoch=xTrain.shape[0] // batchSze,
-                              callbacks = [learningRateReduction])
-                            #   callbacks=[cb_early_stopper])
+                              callbacks=[learningRateReduction])
+#   callbacks=[cb_early_stopper])
 
 
 print('Model metrics name: {0}'.format(model.metrics_names))
 
-loss, accuracy, f1Score=model.evaluate(
+loss, accuracy, f1Score = model.evaluate(
     xTest, yTest, verbose=1)
 
 lossVal, accuracyVal, f1ScoreVal = model.evaluate(

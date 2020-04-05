@@ -10,7 +10,7 @@ import { isNil } from '../../utils/functions';
 import { post, setHeader } from '../../utils/requests';
 import { GoToMenuScreen } from '../../../navigation';
 import { storeToken } from '../../utils/localStorage';
-import colors from '../../utils/colors';
+import { colors } from '../../utils/consts';
 
 const defaultErrors = {
   email: false,
