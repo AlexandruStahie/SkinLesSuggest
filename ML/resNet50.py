@@ -107,7 +107,7 @@ learningRateReduction = ReduceLROnPlateau(
 
 # Fit the model (30 epochs with batch size as 20)
 epochs = 30
-batchSze = 20
+batchSze = 10
 history = model.fit_generator(data_gen.flow(xTrain, yTrain, batch_size=batchSze),
                               epochs=epochs, validation_data=(
                                   xValidate, yValidate),
