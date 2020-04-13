@@ -1,10 +1,7 @@
 /* eslint-disable consistent-return */
 import axios from 'axios';
-// import jwtDecode from 'jwt-decode';
-// import idx from 'idx';
 
-const localTest = true;
-
+const localTest = false;
 const getBaseUrl = () => {
   if (localTest === true) {
     return 'https://localhost:44388/api';
