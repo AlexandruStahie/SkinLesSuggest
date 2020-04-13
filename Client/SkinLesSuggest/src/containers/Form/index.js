@@ -8,7 +8,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './style';
 import CustomButton from '../../components/CustomButton';
-import { colors } from '../../utils/consts';
+import { colors, possibleSolutions } from '../../utils/consts';
 import { post } from '../../utils/requests';
 
 const Form = () => {
@@ -123,17 +123,33 @@ const Form = () => {
   const getSuggestion = () => {
     if (image) {
       setIsLoading(true);
-      const endpoint = 'http://localhost:5000/predict';
+      // const endpoint = 'http://localhost:5000/predict';
+      const endpoint = 'https://skinlessuggest-predapp.herokuapp.com/predict';
       const imageBody = getImageBody();
       const config = { 'Content-Type': 'multipart/form-data' };
 
       post(endpoint, imageBody, config)
         .then((response) => {
-          console.log('getSuggestion err: ', response);
+          console.log('getSuggestion res: ', response);
+          console.log('getSuggestion res 2: ', response.data);
+          Alert.alert(
+            'Suggestion',
+            `Possible lesion of type: ${response.data ? possibleSolutions[response.data.prediction_class] : ''}`,
+            [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+          );
           setIsLoading(false);
         })
         .catch((error) => {
           console.log('getSuggestion err: ', error);
+          Alert.alert(
+            'Error',
+            'Something went wrong, please try again',
+            [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+          );
           setIsLoading(false);
         });
     } else {
