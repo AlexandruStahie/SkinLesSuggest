@@ -1,18 +1,20 @@
-# Load libraries
-import numpy as np
-from PIL import Image
 import flask
-import pandas as pd
-import tensorflow as tf
-import keras
-from keras import backend as K
-from keras.models import load_model
-from flask_cors import CORS
-from io import BytesIO
 import base64
+from io import BytesIO
 
-# instantiate flask
-app = flask.Flask(__name__)
+import tensorflow as tf
+
+from keras.models import load_model
+from keras import backend as K
+import keras
+
+from PIL import Image
+import numpy as np
+
+from flask_cors import CORS, cross_origin
+from flask import Flask
+
+app = Flask(__name__)
 CORS(app)
 
 
@@ -39,33 +41,27 @@ def ResNetNormImages(images):
     return images
 
 
-# load model
-model = tf.keras.models.load_model('modelTestResNet.h5', custom_objects={
-    'CalculateF1Score': CalculateF1Score})
-
-# get the image
-# path = 'ISIC_0024307.jpg'
-# image = Image.open(path).resize((150, 112))
-# image.show()
-
-# Norm images
-# img = ResNetNormImages(image)
-# img = img.reshape(1, *(112, 150, 3))
+@app.route("/")
+@cross_origin(origin='*')
+def home_view():
+    return "<h1>Welcome to Test Main Page</h1>"
 
 
-# 'akiec': 'Actinic keratoses',  # 0
-# 'bcc': 'Basal cell carcinoma',  # 1
-# 'bkl': 'Benign keratosis-like lesions',  # 2
-# 'df': 'Dermatofibroma',  # 3
-# 'nv': 'Melanocytic nevi',  # 4
-# 'mel': 'Melanoma',  # 5
-# 'vasc': 'Vascular lesions'  # 6
+@app.route("/privacy")
+@cross_origin(origin='*')
+def privacy_view():
+    return "<h1>This is still a test app. The app does not save you pictures in any way.</h1>"
 
 
 # define a predict function as an endpoint
 @app.route("/predict", methods=["POST"])
+@cross_origin(origin='*')
 def predict():
     data = {}
+
+    # load model
+    model = tf.keras.models.load_model('modelTestResNet.h5', custom_objects={
+        'CalculateF1Score': CalculateF1Score})
 
     # Body parameters
     jsonData = flask.request.get_json()
@@ -90,6 +86,5 @@ def predict():
     return flask.jsonify(data)
 
 
-# start the flask app, allow remote connections
-app.run(host='0.0.0.0')
-# http://localhost:5000/predict
+if __name__ == "__main__":
+    app.run()
