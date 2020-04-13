@@ -19,6 +19,9 @@ Navigation.events().registerAppLaunchedListener(() => {
       component: {
         name: 'App'
       },
+    },
+    layout: {
+      orientation: ['portrait']
     }
   });
 });

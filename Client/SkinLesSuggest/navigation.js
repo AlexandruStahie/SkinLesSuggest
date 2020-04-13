@@ -42,6 +42,9 @@ const GoToHomeScreen = () => Navigation.setRoot({
         }
       ],
     }
+  },
+  layout: {
+    orientation: ['portrait']
   }
 });
 
@@ -57,6 +60,9 @@ const GoToMenuScreen = () => Navigation.setRoot({
         }
       ],
     }
+  },
+  layout: {
+    orientation: ['portrait']
   }
 });
 
