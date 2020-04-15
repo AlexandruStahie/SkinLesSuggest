@@ -145,7 +145,8 @@ const Form = () => {
           console.log('getSuggestion err: ', error);
           Alert.alert(
             'Error',
-            'Something went wrong, please try again',
+            // `Something went wrong, please try again. Message: ${error}`,
+            'Something went wrong, please try again.',
             [
               { text: 'OK', onPress: () => console.log('OK Pressed') },
             ],

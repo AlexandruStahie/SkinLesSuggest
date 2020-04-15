@@ -12,6 +12,7 @@ const getBaseUrl = () => {
 
 const instance = axios.create({
   baseURL: getBaseUrl(),
+  timeout: 1800000,
   headers: { 'Content-Type': 'application/json' }
 });
 const parseErrors = (error) => error;

@@ -30,8 +30,6 @@ def CalculateF1Score(y_true, y_pred):
 
 def ResNetNormImages(images):
     images = np.asarray(images).astype(np.float64)
-    print(images.shape)
-    # images = images[:, :, :, ::-1]
     m0 = np.mean(images[:, :, 0])
     m1 = np.mean(images[:, :, 1])
     m2 = np.mean(images[:, :, 2])
@@ -53,33 +51,37 @@ def privacy_view():
     return "<h1>This is still a test app. The app does not save you pictures in any way.</h1>"
 
 
+model = tf.keras.models.load_model('modelTestResNet.h5', custom_objects={
+    'CalculateF1Score': CalculateF1Score})
+
 # define a predict function as an endpoint
 @app.route("/predict", methods=["POST"])
 @cross_origin(origin='*')
 def predict():
-    data = {}
+    global model
 
-    # load model
-    model = tf.keras.models.load_model('modelTestResNet.h5', custom_objects={
-        'CalculateF1Score': CalculateF1Score})
+    data = {}
+    print(1)
 
     # Body parameters
     jsonData = flask.request.get_json()
     img = Image.open(BytesIO(base64.b64decode(jsonData['data'])))
 
-    image = img.resize((150, 112))
-    image.show()
-    img = ResNetNormImages(image)
+    print(2)
+    img = img.resize((150, 112))
+    img = ResNetNormImages(img)
     img = img.reshape(1, *(112, 150, 3))
 
+    print(4)
     # Model validation predictions
     yPred_class = model.predict_classes(img)
-    yPred = model.predict(img)
-    pred = [x * 100 for x in yPred[0]]
+    # yPred = model.predict(img)
+    # pred = [x * 100 for x in yPred[0]]
 
+    print(5)
     # Compose response
     data["prediction_class"] = str(yPred_class[0])
-    data["prediction"] = str(pred)
+    # data["prediction"] = str(pred)
     data["success"] = True
 
     # return a response in json format
