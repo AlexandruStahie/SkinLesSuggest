@@ -17,5 +17,15 @@ const possibleSolutions = [
   'Vascular lesions', // # 'vasc': 'Vascular lesions'  # 6
 ];
 
+const possibleSolutionsShortCuts = [
+  'akiec',
+  'bcc',
+  'bkl',
+  'df',
+  'nv',
+  'mel',
+  'vasc',
+];
 
-export { colors, possibleSolutions };
+
+export { colors, possibleSolutions, possibleSolutionsShortCuts };
