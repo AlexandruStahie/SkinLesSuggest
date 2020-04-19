@@ -1,11 +1,11 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-else-return */
+/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, Alert, PermissionsAndroid, Linking, Image
+  Text, View, Alert, PermissionsAndroid, Linking, Image, Button
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Modal from 'react-native-modal';
 import styles from './style';
 import CustomButton from '../../components/CustomButton';
 import { colors, possibleSolutions } from '../../utils/consts';
@@ -14,6 +14,7 @@ import { post } from '../../utils/requests';
 const Form = () => {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
     setIsLoading(false);
@@ -112,18 +113,9 @@ const Form = () => {
     };
   };
 
-  //   # 'akiec': 'Actinic keratoses',  # 0
-  // # 'bcc': 'Basal cell carcinoma',  # 1
-  // # 'bkl': 'Benign keratosis-like lesions',  # 2
-  // # 'df': 'Dermatofibroma',  # 3
-  // # 'nv': 'Melanocytic nevi',  # 4
-  // # 'mel': 'Melanoma',  # 5
-  // # 'vasc': 'Vascular lesions'  # 6
-
   const getSuggestion = () => {
     if (image) {
       setIsLoading(true);
-      // const endpoint = 'http://localhost:5000/predict';
       const endpoint = 'https://skinlessuggest-predapp.herokuapp.com/predict';
       const imageBody = getImageBody();
       const config = { 'Content-Type': 'multipart/form-data' };
@@ -145,7 +137,6 @@ const Form = () => {
           console.log('getSuggestion err: ', error);
           Alert.alert(
             'Error',
-            // `Something went wrong, please try again. Message: ${error}`,
             'Something went wrong, please try again.',
             [
               { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -173,8 +164,22 @@ const Form = () => {
       />
       <View style={styles.container}>
         <Text style={styles.logo}>SkinLesSuggest</Text>
-
+        <View style={styles.instructions}>
+          <Text style={styles.checkInstr}>
+            Check Instructions
+          </Text>
+          <Text
+            style={styles.iDispaly}
+            onPress={() => setShowInstructions(true)}
+            hitSlop={{
+              top: 20, bottom: 20, left: 50, right: 50
+            }}
+          >
+            i
+          </Text>
+        </View>
         <CustomButton
+          customStyle={{ marginTop: 10 }}
           text="Attach Image"
           onPress={attachImage}
         />
@@ -191,12 +196,51 @@ const Form = () => {
               }}
               style={styles.image}
               resizeMode="contain"
-
             />
           ) : null
         }
 
       </View>
+      <Modal
+        onBackdropPress={() => setShowInstructions(false)}
+        isVisible={showInstructions}
+      >
+        <View style={styles.modalView}>
+          <Text style={{ fontSize: 17, marginBottom: 10 }}>Instructions for better suggestions:</Text>
+          <Text style={styles.instrBullet}>
+            {'\u25CF'}
+            {' '}
+            Take clear pictures;
+          </Text>
+          <Text style={styles.instrBullet}>
+            {'\u25CF'}
+            {' '}
+            Frame the lesion well;
+          </Text>
+          <Text style={styles.instrBullet}>
+            {'\u25CF'}
+            {' '}
+            Use the custom zoom for a good fit;
+            {' '}
+          </Text>
+          <Text style={styles.instrBullet}>
+            {'\u25CF'}
+            {' '}
+            Example image:
+            {' '}
+          </Text>
+          <Image
+            source={require('../../../example.jpg')}
+            style={[styles.image, { marginTop: 10 }]}
+            resizeMode="contain"
+          />
+          <CustomButton
+            customStyle={styles.okCustomButton}
+            text="Ok"
+            onPress={() => setShowInstructions(false)}
+          />
+        </View>
+      </Modal>
     </>
   );
 

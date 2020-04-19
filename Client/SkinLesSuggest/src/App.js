@@ -17,7 +17,6 @@ const App = () => {
   }, []);
 
   const redirectScreen = () => {
-    console.log('test');
     getData('token').then((token) => {
       if (token) {
         const decodedToken = jwtDecode(decodeURIComponent(token));
