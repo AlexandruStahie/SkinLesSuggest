@@ -8,6 +8,7 @@ const RegisterScreens = () => {
   Navigation.registerComponent('Register', () => require('./src/containers/Register').default);
   Navigation.registerComponent('Menu', () => require('./src/containers/Menu').default);
   Navigation.registerComponent('GetSuggestion', () => require('./src/containers/Form').default);
+  Navigation.registerComponent('Result', () => require('./src/containers/Result').default);
 };
 
 Navigation.setDefaultOptions({

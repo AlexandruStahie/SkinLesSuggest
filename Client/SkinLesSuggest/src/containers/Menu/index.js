@@ -41,7 +41,6 @@ const Menu = () => {
           onPress={logout}
         />
 
-        {/* test Auth */}
         <CustomButton
           text="Test Auth"
           onPress={testAuth}

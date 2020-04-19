@@ -1,22 +1,24 @@
 /* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, Alert, PermissionsAndroid, Linking, Image, Button
+  Text, View, Alert, PermissionsAndroid, Linking, Image
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
+import { Navigation } from 'react-native-navigation';
 import styles from './style';
 import CustomButton from '../../components/CustomButton';
-import { colors, possibleSolutions } from '../../utils/consts';
+import { colors } from '../../utils/consts';
 import { post } from '../../utils/requests';
 
-const Form = () => {
+const Form = ({ componentId }) => {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
+    setImage(null);
     setIsLoading(false);
   }, []);
 
@@ -122,15 +124,15 @@ const Form = () => {
 
       post(endpoint, imageBody, config)
         .then((response) => {
-          console.log('getSuggestion res: ', response);
-          console.log('getSuggestion res 2: ', response.data);
-          Alert.alert(
-            'Suggestion',
-            `Possible lesion of type: ${response.data ? possibleSolutions[response.data.prediction_class] : ''}`,
-            [
-              { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-          );
+          Navigation.push(componentId, {
+            component: {
+              name: 'Result',
+              passProps: {
+                response
+              }
+            }
+          });
+          setImage(null);
           setIsLoading(false);
         })
         .catch((error) => {
