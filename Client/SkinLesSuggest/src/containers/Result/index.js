@@ -58,6 +58,7 @@ const Results = ({ response, componentId }) => {
               <Text style={styles.checkLegend}>
                 Chart Legend
               </Text>
+
               <Text
                 style={styles.iDispaly}
                 onPress={() => setShowLegend(true)}
@@ -93,6 +94,7 @@ const Results = ({ response, componentId }) => {
                   <Text style={{ textAlign: 'center', fontSize: 17 }}>
                     {`Suggestion received : ${suggestion}` }
                   </Text>
+
                 </View>
               </View>
               )
@@ -114,6 +116,11 @@ const Results = ({ response, componentId }) => {
       >
         <View style={styles.modalView}>
           <Text style={{ fontSize: 17, marginBottom: 10 }}>Chart Legend</Text>
+
+          <Text style={{ textAlign: 'left', fontSize: 15, marginBottom: 10 }}>
+            This chart display the app suggestion, alongside of all other types of injuries that can be identified by the application.
+          </Text>
+
           <Text style={styles.instrBullet}>
             {'\u25CF'}
             {' '}
