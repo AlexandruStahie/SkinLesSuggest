@@ -6,12 +6,12 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 import { Navigation } from 'react-native-navigation';
-import styles from './style';
 import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
 import Instructions from '../../components/Instructions';
 import { colors } from '../../utils/consts';
 import { post } from '../../utils/requests';
+import ExtraInfo from '../../components/ExtraInfo';
 
 const Form = ({ componentId }) => {
   const [image, setImage] = useState(null);
@@ -51,7 +51,7 @@ const Form = ({ componentId }) => {
       'Error',
       'The SkinLesSuggest app does not have permissions to access this phone resource. Please enable the required Permissions in order to use this function.',
       [
-        { text: 'OK', onPress: () => { console.log('OK Pressed'); } },
+        { text: 'OK', onPress: () => { } },
         { text: 'Settings', onPress: () => { Linking.openSettings(); } },
       ],
     );
@@ -84,26 +84,28 @@ const Form = ({ componentId }) => {
     switch (source) {
       case 'camera':
         ImagePicker.openCamera(options).then((response) => {
+          console.log('camera response: ', response);
           setImage(response);
         }).catch((err) => {
-          if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert(); }
+          if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert('Please try again!'); }
         });
         break;
       case 'gallery':
         ImagePicker.openPicker(options).then((response) => {
+          console.log('gallery response: ', response);
           setImage(response);
         }).catch((err) => {
-          if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert(); }
+          if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert('Please try again!'); }
         });
         break;
       default:
-        dispalyErrorAlert();
+        dispalyErrorAlert('Please try again!');
         break;
     }
   };
 
-  const dispalyErrorAlert = () => {
-    Alert.alert('Error', 'Please try again!', [{ text: 'ok', onPress: () => { console.log('Ok pressed'); } }]);
+  const dispalyErrorAlert = (text) => {
+    Alert.alert('Error', text, [{ text: 'ok', onPress: () => { } }]);
   };
 
   const getImageBody = () => {
@@ -136,25 +138,12 @@ const Form = ({ componentId }) => {
           setImage(null);
           setIsLoading(false);
         })
-        .catch((error) => {
-          console.log('getSuggestion err: ', error);
-          Alert.alert(
-            'Error',
-            'Something went wrong, please try again.',
-            [
-              { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-          );
+        .catch(() => {
+          dispalyErrorAlert('Something went wrong, please try again.');
           setIsLoading(false);
         });
     } else {
-      Alert.alert(
-        'Error',
-        'Please attach one image',
-        [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ],
-      );
+      dispalyErrorAlert('Please attach one image');
     }
   };
 
@@ -167,20 +156,10 @@ const Form = ({ componentId }) => {
       />
       <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
         <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop]}>SkinLesSuggest</Text>
-        <View style={styles.instructions}>
-          <Text style={styles.checkInstr}>
-            Check Instructions
-          </Text>
-          <Text
-            style={styles.iDispaly}
-            onPress={() => setShowInstructions(true)}
-            hitSlop={{
-              top: 20, bottom: 20, left: 50, right: 50
-            }}
-          >
-            i
-          </Text>
-        </View>
+        <ExtraInfo
+          infoLabel="Check Instructions"
+          onInfoPress={() => setShowInstructions(true)}
+        />
         <CustomButton
           customStyle={{ marginTop: 10 }}
           text="Attach Image"
@@ -197,7 +176,7 @@ const Form = ({ componentId }) => {
               source={{
                 uri: `data:image/jpeg;base64,${image.data}`,
               }}
-              style={styles.image}
+              style={generalStyles.image}
               resizeMode="contain"
             />
           ) : null

@@ -26,12 +26,32 @@ export default StyleSheet.create({
   logoMarginTop: {
     marginTop: 40
   },
+
+  // SPLASHS SCREEN
   logoImage: {
     width: 100,
     height: 100
   },
+  splashTitle: {
+    fontWeight: 'bold',
+    fontSize: 35,
+    textAlign: 'center',
+    justifyContent: 'center',
+    color: colors.customGreen,
+    marginBottom: 40,
+    marginTop: 15
+  },
 
   // MODAL
+  modalTitle: {
+    fontSize: 17,
+    marginBottom: 10
+  },
+  modalSubtitle: {
+    textAlign: 'left',
+    fontSize: 15,
+    marginBottom: 10
+  },
   modalView: {
     backgroundColor: 'white',
     padding: 22,
@@ -55,10 +75,41 @@ export default StyleSheet.create({
     fontSize: 15
   },
 
-  // INSTRUCTIONS IMAGE EXAMPLE
-  exampleImage: {
+  // IMAGES
+  image: {
     marginTop: 10,
     width: Dimensions.get('window').width - 50,
     height: 180,
   },
+
+  // INFO CONTAINER
+  infoContainer: {
+    width: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  infoLabel: {
+    fontSize: 18,
+    width: '90%',
+  },
+  infoButton: {
+    fontSize: 18,
+    width: '10%',
+    borderRadius: 50,
+    borderWidth: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: colors.customBlue
+  },
+
+  // LOGIN/REGISTER
+  forgot: {
+    color: colors.black,
+    fontSize: 11
+  },
+  errorMessage: {
+    color: colors.red,
+    fontSize: 15
+  }
 });

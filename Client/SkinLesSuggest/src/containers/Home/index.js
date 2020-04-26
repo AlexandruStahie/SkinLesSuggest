@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import styles from './style';
 import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
 

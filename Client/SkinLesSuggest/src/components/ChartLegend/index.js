@@ -7,12 +7,10 @@ const ChartLegend = ({ onPressOk }) => {
   const contentToRender = (
     <>
       <View style={generalStyles.modalView}>
-        <Text style={{ fontSize: 17, marginBottom: 10 }}>Chart Legend</Text>
-
-        <Text style={{ textAlign: 'left', fontSize: 15, marginBottom: 10 }}>
+        <Text style={generalStyles.modalTitle}>Chart Legend</Text>
+        <Text style={generalStyles.modalSubtitle}>
           This chart display the app suggestion, alongside of all other types of injuries that can be identified by the application.
         </Text>
-
         <Text style={generalStyles.instrBullet}>
           {'\u25CF'}
           {' '}

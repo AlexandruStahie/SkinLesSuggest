@@ -12,6 +12,7 @@ import CustomButton from '../../components/CustomButton';
 import { possibleSolutions, possibleSolutionsShortCuts } from '../../utils/consts';
 import Disclaimer from '../../components/Disclaimer';
 import ChartLegend from '../../components/ChartLegend';
+import ExtraInfo from '../../components/ExtraInfo';
 
 const initialData = [20, 20, 20, 20, 20, 20, 20];
 
@@ -42,36 +43,17 @@ const Results = ({ response, componentId }) => {
         <ScrollView>
           <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
             <Text style={[generalStyles.logoBase, { marginTop: 20 }]}>SkinLesSuggest</Text>
-            <View style={[styles.legend, { marginBottom: 7 }]}>
-              <Text style={styles.checkLegend}>
-                Disclaimer
-              </Text>
-              <Text
-                style={[styles.iDispaly, { color: 'red' }]}
-                onPress={() => setShowDisclaimer(true)}
-                hitSlop={{
-                  top: 20, bottom: 20, left: 50, right: 50
-                }}
-              >
-                i
-              </Text>
-            </View>
+            <ExtraInfo
+              customInfoContainerStyle={{ marginBottom: 7 }}
+              customInfoButtonStyle={{ color: 'red' }}
+              infoLabel="Disclaimer"
+              onInfoPress={() => setShowDisclaimer(true)}
+            />
+            <ExtraInfo
+              infoLabel=" Chart Legend"
+              onInfoPress={() => setShowLegend(true)}
+            />
 
-            <View style={styles.legend}>
-              <Text style={styles.checkLegend}>
-                Chart Legend
-              </Text>
-
-              <Text
-                style={styles.iDispaly}
-                onPress={() => setShowLegend(true)}
-                hitSlop={{
-                  top: 20, bottom: 20, left: 50, right: 50
-                }}
-              >
-                i
-              </Text>
-            </View>
             <BarChart
               data={{
                 labels: possibleSolutionsShortCuts,

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
-import styles from './style';
 import generalStyles from '../../generalStyle';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
@@ -60,14 +59,12 @@ const Login = ({ newEmail, newPass }) => {
             setIsLoading(false);
           } else {
             storeToken(response.token);
-            console.log('response', response);
             setHeader('Authorization', `Bearer ${response.token}`);
             GoToMenuScreen();
             setIsLoading(false);
           }
         })
         .catch((err) => {
-          console.log('registerError', err);
           const errorMsg = 'Something went wrong, please try again!';
           setErrorMessage(errorMsg);
           setIsLoading(false);
@@ -139,16 +136,16 @@ const Login = ({ newEmail, newPass }) => {
         />
 
         <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot Password?</Text>
+          <Text style={generalStyles.forgot}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        <Text style={styles.errorMessage}>{errorMessage}</Text>
+        <Text style={generalStyles.errorMessage}>{errorMessage}</Text>
         <CustomButton
           text="Login"
           onPress={login}
         />
         <TouchableOpacity>
-          <Text style={styles.simpleText} onPress={goToRegisterScreen}>Register</Text>
+          <Text onPress={goToRegisterScreen}>Register</Text>
         </TouchableOpacity>
       </View>
     </>

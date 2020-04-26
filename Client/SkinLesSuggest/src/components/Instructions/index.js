@@ -8,7 +8,7 @@ const Insutrctions = ({ onPressOk }) => {
   const contentToRender = (
     <>
       <View style={generalStyles.modalView}>
-        <Text style={{ fontSize: 17, marginBottom: 10 }}>Instructions for better suggestions:</Text>
+        <Text style={generalStyles.modalTitle}>Instructions for better suggestions:</Text>
         <Text style={generalStyles.instrBullet}>
           {'\u25CF'}
           {' '}

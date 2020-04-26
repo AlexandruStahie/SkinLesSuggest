@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
-import styles from './style';
 import generalStyles from '../../generalStyle';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
@@ -69,7 +68,6 @@ const Register = ({ componentId, goToLoginScreen }) => {
           }
         })
         .catch((err) => {
-          console.log('registerError', err);
           const errorMsg = 'Something went wrong, please try again!';
           setErrorMessage(errorMsg);
           setIsLoading(false);
@@ -131,7 +129,7 @@ const Register = ({ componentId, goToLoginScreen }) => {
           setField={setField}
           secureTextEntry
         />
-        <Text style={styles.errorMessage}>{errorMessage}</Text>
+        <Text style={generalStyles.errorMessage}>{errorMessage}</Text>
 
         <CustomButton
           text="Register"
