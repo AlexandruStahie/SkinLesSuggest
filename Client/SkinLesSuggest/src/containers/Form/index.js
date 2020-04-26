@@ -49,12 +49,11 @@ const Form = ({ componentId, logout }) => {
             logout();
             setIsLoading(false);
           }
+        } else {
+          setIsLoading(false);
         }
       })
       .catch(() => {
-        if (logout) {
-          logout();
-        }
         setIsLoading(false);
       });
   }, []);
