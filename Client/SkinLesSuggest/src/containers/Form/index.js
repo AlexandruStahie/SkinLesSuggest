@@ -13,7 +13,7 @@ import ModalInfo from '../../components/ModalInfo';
 import { getData } from '../../utils/localStorage';
 import { instructions } from '../../utils/consts';
 import { isNil } from '../../utils/functions';
-import { post } from '../../utils/requests';
+import { get, post } from '../../utils/requests';
 import Loader from '../../components/Loader';
 import ExtraInfo from '../../components/ExtraInfo';
 import UserForm from './userForm';
@@ -26,36 +26,55 @@ const defaultUserData = {
   localization: ''
 };
 
-const Form = ({ componentId }) => {
+const Form = ({ componentId, logout }) => {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showInstructions, setShowInstructions] = useState(false);
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(defaultUserData);
+  const [userHadSavedData, setUserHadSavedData] = useState(false);
 
   useEffect(() => {
     setImage(null);
-    setIsLoading(false);
 
-    const userLoggedIn = checkUserIsLoggedIn();
-    console.log(userLoggedIn);
-    setUserIsLoggedIn(true);
-  }, []);
-
-  // User Fields Methods
-  const checkUserIsLoggedIn = () => {
     getData('token')
       .then((token) => {
         if (token) {
-          const { exp } = jwtDecode(decodeURIComponent(token));
+          const decodedToken = jwtDecode(decodeURIComponent(token));
+          const { exp, nameid } = decodedToken;
           if (exp >= new Date().getTime() / 1000) {
-            return true;
+            setUserIsLoggedIn(true);
+            checkUserData(nameid);
+          } else if (logout) {
+            logout();
+            setIsLoading(false);
           }
         }
-
-        return false;
       })
-      .catch(() => false);
+      .catch(() => {
+        if (logout) {
+          logout();
+        }
+        setIsLoading(false);
+      });
+  }, []);
+
+  // User Form Methods
+  const checkUserData = (userId) => {
+    get(`/User/userDetails/${userId}`)
+      .then((result) => {
+        if (result == null || result.data == null) {
+          setUserData(defaultUserData);
+        } else {
+          setUserData(result.data);
+          setUserHadSavedData(true);
+        }
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setUserData(defaultUserData);
+        setIsLoading(false);
+      });
   };
   const setField = (field, value) => {
     const userDataClone = { ...userData };
@@ -174,15 +193,9 @@ const Form = ({ componentId }) => {
 
       post(endpoint, imageBody, config)
         .then((response) => {
-          Navigation.push(componentId, {
-            component: {
-              name: 'Result',
-              passProps: {
-                response
-              }
-            }
-          });
+          askUserToSaveDetails(response);
           setImage(null);
+          setUserHadSavedData(true);
           setIsLoading(false);
         })
         .catch(() => {
@@ -194,6 +207,61 @@ const Form = ({ componentId }) => {
     }
   };
 
+  const checkUserFields = () => {
+    const {
+      firstName, lastName, age, gender
+    } = userData;
+
+    if ((firstName && firstName.trim().length > 0)
+      || (lastName && lastName.trim().length > 0)
+      || (age && age.trim().length > 0)
+      || (gender && gender.trim().length > 0)) {
+      return true;
+    }
+    return false;
+  };
+  const askUserToSaveDetails = (response) => {
+    const userCompletedFields = checkUserFields();
+    if (userCompletedFields && !userHadSavedData) {
+      Alert.alert('', 'Do you want to save the compelted informations ?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              saveUserData();
+              goToResultScreen(response);
+            }
+          },
+          {
+            text: 'No',
+            onPress: () => goToResultScreen(response)
+          }
+        ]);
+    } else {
+      goToResultScreen(response);
+    }
+  };
+  const saveUserData = () => {
+    getData('token')
+      .then((token) => {
+        if (token) {
+          const decodedToken = jwtDecode(decodeURIComponent(token));
+          const { nameid } = decodedToken;
+          post(`/User/userDetails/${nameid}`, userData);
+        }
+      });
+  };
+  const goToResultScreen = (response) => {
+    Navigation.push(componentId, {
+      component: {
+        name: 'Result',
+        passProps: {
+          response
+        }
+      }
+    });
+  };
+
   const contentToRender = (
     <>
       {isLoading && <Loader />}
@@ -201,13 +269,11 @@ const Form = ({ componentId }) => {
         <ScrollView>
           <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
             <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop]}>SkinLesSuggest</Text>
-
             <UserForm
-              userIsLoggedIn
+              userIsLoggedIn={userIsLoggedIn}
               userData={userData}
               setField={setField}
             />
-
             <ExtraInfo
               infoLabel="Attach Image Instructions"
               onInfoPress={() => setShowInstructions(true)}
@@ -224,17 +290,16 @@ const Form = ({ componentId }) => {
             />
 
             {
-          image ? (
-            <Image
-              source={{
-                uri: `data:image/jpeg;base64,${image.data}`,
-              }}
-              style={generalStyles.image}
-              resizeMode="contain"
-            />
-          ) : null
-        }
-
+              image ? (
+                <Image
+                  source={{
+                    uri: `data:image/jpeg;base64,${image.data}`,
+                  }}
+                  style={generalStyles.image}
+                  resizeMode="contain"
+                />
+              ) : null
+            }
           </View>
         </ScrollView>
       </View>

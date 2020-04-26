@@ -13,6 +13,7 @@ export default StyleSheet.create({
   },
   inputText: {
     height: 50,
-    color: colors.black
+    color: colors.black,
+    fontSize: 16
   },
 });

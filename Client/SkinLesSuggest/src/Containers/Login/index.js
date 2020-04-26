@@ -57,8 +57,11 @@ const Login = ({ newEmail, newPass }) => {
             setErrorMessage(response.message);
             setIsLoading(false);
           } else {
-            storeToken(response.token);
-            setHeader('Authorization', `Bearer ${response.token}`);
+            const token = response;
+            // const token = response.token;
+
+            storeToken(token);
+            setHeader('Authorization', `Bearer ${token}`);
             GoToMenuScreen();
             setIsLoading(false);
           }
