@@ -9,7 +9,7 @@ const CustomDropDown = ({
     <>
       <ModalDropdown
         style={styles.inputView}
-        textStyle={[styles.inputText, value !== '' ? styles.blackInputText : styles.greyInputText]}
+        textStyle={[styles.inputText, value ? styles.blackInputText : styles.greyInputText]}
         dropdownStyle={[styles.dropdownStyle, options && options.length > 2 ? { height: 200 } : { height: 100 }]}
         dropdownTextStyle={styles.dropdownTextStyle}
         dropdownTextHighlightStyle={styles.dropdownTextHighlightStyle}

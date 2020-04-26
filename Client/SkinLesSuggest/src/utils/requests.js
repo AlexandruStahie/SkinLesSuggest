@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 import axios from 'axios';
 
-const localTest = false;
+const localTest = true;
 const getBaseUrl = () => {
   if (localTest === true) {
     return 'https://localhost:44388/api';
