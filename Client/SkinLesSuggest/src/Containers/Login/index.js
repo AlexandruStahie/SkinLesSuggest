@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import Spinner from 'react-native-loading-spinner-overlay';
 import generalStyles from '../../generalStyle';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
@@ -10,7 +9,7 @@ import { isNil } from '../../utils/functions';
 import { post, setHeader } from '../../utils/requests';
 import { GoToMenuScreen } from '../../../navigation';
 import { storeToken } from '../../utils/localStorage';
-import { colors } from '../../utils/consts';
+import Loader from '../../components/Loader';
 
 const defaultErrors = {
   email: false,
@@ -112,11 +111,7 @@ const Login = ({ newEmail, newPass }) => {
 
   const contentToRender = (
     <>
-      <Spinner
-        visible={isLoading}
-        overlayColor="rgba(255, 255, 255, 0.7)"
-        color={colors.customGreen}
-      />
+      {isLoading && <Loader />}
       <View style={[generalStyles.containerBase, generalStyles.centerContainer]}>
         <Text style={generalStyles.logoBase}>SkinLesSuggest</Text>
         <CustomTextInput

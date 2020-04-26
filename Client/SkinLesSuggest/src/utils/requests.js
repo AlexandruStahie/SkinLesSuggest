@@ -18,7 +18,7 @@ const instance = axios.create({
 const parseErrors = (error) => error;
 
 const handleErrors = (errors) => {
-  console.log('errors: ', errors);
+  console.log('request errors: ', errors);
 };
 
 const setHeader = (headerName, headerValue) => {
