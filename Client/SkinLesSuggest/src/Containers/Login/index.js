@@ -3,6 +3,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './style';
+import generalStyles from '../../generalStyle';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
@@ -119,8 +120,8 @@ const Login = ({ newEmail, newPass }) => {
         overlayColor="rgba(255, 255, 255, 0.7)"
         color={colors.customGreen}
       />
-      <View style={styles.container}>
-        <Text style={styles.logo}>SkinLesSuggest</Text>
+      <View style={[generalStyles.containerBase, generalStyles.centerContainer]}>
+        <Text style={generalStyles.logoBase}>SkinLesSuggest</Text>
         <CustomTextInput
           showError={errors}
           value={email}

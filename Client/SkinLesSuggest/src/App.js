@@ -6,6 +6,7 @@ import { GoToHomeScreen, GoToMenuScreen } from '../navigation';
 import { getData } from './utils/localStorage';
 import { setHeader } from './utils/requests';
 import { colors } from './utils/consts';
+import generalStyle from './generalStyle';
 
 const App = () => {
   useEffect(() => {
@@ -37,17 +38,10 @@ const App = () => {
 
   const contentToRender = (
     <>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.white,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <View style={[generalStyle.containerBase, generalStyle.centerContainer]}>
         <Image
           source={require('../logo.png')}
-          style={{ width: 100, height: 100 }}
+          style={generalStyle.logoImage}
         />
         <Text
           style={{

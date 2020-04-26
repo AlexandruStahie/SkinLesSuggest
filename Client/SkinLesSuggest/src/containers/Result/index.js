@@ -7,8 +7,11 @@ import { BarChart } from 'react-native-chart-kit';
 import { Navigation } from 'react-native-navigation';
 import Modal from 'react-native-modal';
 import styles from './style';
+import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
 import { possibleSolutions, possibleSolutionsShortCuts } from '../../utils/consts';
+import Disclaimer from '../../components/Disclaimer';
+import ChartLegend from '../../components/ChartLegend';
 
 const initialData = [20, 20, 20, 20, 20, 20, 20];
 
@@ -37,8 +40,8 @@ const Results = ({ response, componentId }) => {
     <>
       <View style={{ flex: 1 }}>
         <ScrollView>
-          <View style={styles.container}>
-            <Text style={[styles.logo, { marginTop: 20 }]}>SkinLesSuggest</Text>
+          <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
+            <Text style={[generalStyles.logoBase, { marginTop: 20 }]}>SkinLesSuggest</Text>
             <View style={[styles.legend, { marginBottom: 7 }]}>
               <Text style={styles.checkLegend}>
                 Disclaimer
@@ -91,7 +94,11 @@ const Results = ({ response, componentId }) => {
               suggestion && (
               <View style={{ flex: 1, flexDirection: 'row', width: '80%' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ textAlign: 'center', fontSize: 17 }}>
+                  <Text style={{ textAlign: 'left', fontSize: 16 }}>
+                    {'\u25CF'}
+                    {' '}
+                    {' '}
+                    {' '}
                     {`Suggestion received : ${suggestion}` }
                   </Text>
 
@@ -109,98 +116,21 @@ const Results = ({ response, componentId }) => {
         </ScrollView>
       </View>
 
-
       <Modal
         onBackdropPress={() => setShowLegend(false)}
         isVisible={showLegend}
       >
-        <View style={styles.modalView}>
-          <Text style={{ fontSize: 17, marginBottom: 10 }}>Chart Legend</Text>
-
-          <Text style={{ textAlign: 'left', fontSize: 15, marginBottom: 10 }}>
-            This chart display the app suggestion, alongside of all other types of injuries that can be identified by the application.
-          </Text>
-
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            {' '}
-            akiec - Actinic keratoses
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            {' '}
-            bcc - Basal cell carcinoma
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            {' '}
-            bkl - Benign keratosis-like lesions
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            {' '}
-            df - Dermatofibroma
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            {' '}
-            nv - Melanocytic nevi
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            {' '}
-            mel - Melanoma
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            {' '}
-            vasc - Vascular lesions
-          </Text>
-          <CustomButton
-            customStyle={styles.okCustomButton}
-            text="Ok"
-            onPress={() => setShowLegend(false)}
-          />
-        </View>
+        <ChartLegend
+          onPressOk={() => setShowLegend(false)}
+        />
       </Modal>
       <Modal
         onBackdropPress={() => setShowDisclaimer(false)}
         isVisible={showDisclaimer}
       >
-        <View style={styles.modalView}>
-          <Text style={{ fontSize: 17, marginBottom: 10 }}>Disclaimer</Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            Please notice that the application offers only suggestions regarding the categorization of your injuries.
-          </Text>
-          <Text style={[styles.instrBullet, { marginTop: 10 }]}>
-            {'\u25CF'}
-            {' '}
-            {' '}
-            The received result is not a real diagnostic, just an suggestion. For a valid diagnostic please contact a medic.
-          </Text>
-          <CustomButton
-            customStyle={styles.okCustomButton}
-            text="Ok"
-            onPress={() => setShowDisclaimer(false)}
-          />
-        </View>
+        <Disclaimer
+          onPressOk={() => setShowDisclaimer(false)}
+        />
       </Modal>
     </>
   );

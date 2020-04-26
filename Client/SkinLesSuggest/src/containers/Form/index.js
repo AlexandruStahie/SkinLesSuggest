@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
   Text, View, Alert, PermissionsAndroid, Linking, Image
@@ -8,7 +7,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 import { Navigation } from 'react-native-navigation';
 import styles from './style';
+import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
+import Instructions from '../../components/Instructions';
 import { colors } from '../../utils/consts';
 import { post } from '../../utils/requests';
 
@@ -164,8 +165,8 @@ const Form = ({ componentId }) => {
         overlayColor="rgba(255, 255, 255, 0.7)"
         color={colors.customGreen}
       />
-      <View style={styles.container}>
-        <Text style={styles.logo}>SkinLesSuggest</Text>
+      <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
+        <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop]}>SkinLesSuggest</Text>
         <View style={styles.instructions}>
           <Text style={styles.checkInstr}>
             Check Instructions
@@ -203,45 +204,14 @@ const Form = ({ componentId }) => {
         }
 
       </View>
+
       <Modal
         onBackdropPress={() => setShowInstructions(false)}
         isVisible={showInstructions}
       >
-        <View style={styles.modalView}>
-          <Text style={{ fontSize: 17, marginBottom: 10 }}>Instructions for better suggestions:</Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            Take clear pictures;
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            Frame the lesion well;
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            Use the custom zoom for a good fit;
-            {' '}
-          </Text>
-          <Text style={styles.instrBullet}>
-            {'\u25CF'}
-            {' '}
-            Example image:
-            {' '}
-          </Text>
-          <Image
-            source={require('../../../example.jpg')}
-            style={[styles.image, { marginTop: 10 }]}
-            resizeMode="contain"
-          />
-          <CustomButton
-            customStyle={styles.okCustomButton}
-            text="Ok"
-            onPress={() => setShowInstructions(false)}
-          />
-        </View>
+        <Instructions
+          onPressOk={() => setShowInstructions(false)}
+        />
       </Modal>
     </>
   );
