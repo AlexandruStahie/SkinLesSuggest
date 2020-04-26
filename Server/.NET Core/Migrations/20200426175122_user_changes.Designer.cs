@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkinLesSuggest.Context;
 
 namespace SkinLesSuggest.Migrations
 {
     [DbContext(typeof(SkinLesSuggestContext))]
-    partial class SkinLesSuggestContextModelSnapshot : ModelSnapshot
+    [Migration("20200426175122_user_changes")]
+    partial class user_changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkinLesSuggest.Context;
 
 namespace SkinLesSuggest.Migrations
 {
     [DbContext(typeof(SkinLesSuggestContext))]
-    partial class SkinLesSuggestContextModelSnapshot : ModelSnapshot
+    [Migration("20200426160125_UserDetails")]
+    partial class UserDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,12 +69,15 @@ namespace SkinLesSuggest.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserDetailsId");
+
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SkinLesSuggest.Models.UserDetails", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Age")
@@ -101,13 +106,11 @@ namespace SkinLesSuggest.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SkinLesSuggest.Models.UserDetails", b =>
+            modelBuilder.Entity("SkinLesSuggest.Models.User", b =>
                 {
-                    b.HasOne("SkinLesSuggest.Models.User", null)
-                        .WithOne("UserDetails")
-                        .HasForeignKey("SkinLesSuggest.Models.UserDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("SkinLesSuggest.Models.UserDetails", "UserDetails")
+                        .WithMany()
+                        .HasForeignKey("UserDetailsId");
                 });
 #pragma warning restore 612, 618
         }

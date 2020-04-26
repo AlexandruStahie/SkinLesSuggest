@@ -8,16 +8,11 @@ using System.Threading.Tasks;
 
 namespace SkinLesSuggest.Context.Configurations
 {
-    public class UserTypeConfig : IEntityTypeConfiguration<User>
+    public class UserDetailsTypeConfig : IEntityTypeConfiguration<UserDetails>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<UserDetails> builder)
         {
             builder.HasKey(x => x.Id);
-
-            builder.HasOne(x => x.UserDetails)
-              .WithOne()
-              .HasForeignKey<UserDetails>(x => x.Id)
-              .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
