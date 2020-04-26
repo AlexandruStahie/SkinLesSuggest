@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './style';
+import generalStyles from '../../generalStyle';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
@@ -108,13 +109,13 @@ const Register = ({ componentId, goToLoginScreen }) => {
 
   const contentToRender = (
     <>
-      <View style={styles.container}>
+      <View style={[generalStyles.containerBase, generalStyles.centerContainer]}>
         <Spinner
           visible={isLoading}
           overlayColor="rgba(255, 255, 255, 0.7)"
           color={colors.customGreen}
         />
-        <Text style={styles.logo}>SkinLesSuggest</Text>
+        <Text style={generalStyles.logoBase}>SkinLesSuggest</Text>
         <CustomTextInput
           showError={errors}
           value={email}

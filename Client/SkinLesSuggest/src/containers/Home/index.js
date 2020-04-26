@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import styles from './style';
+import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
 
 const Home = ({ componentId }) => {
@@ -38,8 +39,8 @@ const Home = ({ componentId }) => {
 
   const contentToRender = (
     <>
-      <View style={styles.container}>
-        <Text style={styles.logo}>SkinLesSuggest</Text>
+      <View style={[generalStyles.containerBase, generalStyles.centerContainer]}>
+        <Text style={generalStyles.logoBase}>SkinLesSuggest</Text>
 
         <CustomButton
           text="Get Suggestion"

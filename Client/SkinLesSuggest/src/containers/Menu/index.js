@@ -7,6 +7,7 @@ import { GoToHomeScreen } from '../../../navigation';
 import { clearStore } from '../../utils/localStorage';
 import CustomButton from '../../components/CustomButton';
 import { get } from '../../utils/requests';
+import generalStyles from '../../generalStyle';
 
 const Menu = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,8 +34,8 @@ const Menu = () => {
         overlayColor="rgba(255, 255, 255, 0.7)"
         color={colors.customGreen}
       />
-      <View style={styles.container}>
-        <Text style={styles.logo}>SkinLesSuggest</Text>
+      <View style={[generalStyles.containerBase, generalStyles.centerContainer]}>
+        <Text style={generalStyles.logoBase}>SkinLesSuggest</Text>
 
         <CustomButton
           text="Logout"
