@@ -113,14 +113,15 @@ const Register = ({ componentId, goToLoginScreen }) => {
           showError={errors}
           value={email}
           name="email"
-          placeholder="Email..."
+          placeholder="Email"
+          type="email-address"
           setField={setField}
         />
         <CustomTextInput
           showError={errors}
           value={password}
           name="password"
-          placeholder="Password..."
+          placeholder="Password"
           setField={setField}
           secureTextEntry
         />

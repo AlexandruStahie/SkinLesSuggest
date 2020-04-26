@@ -76,17 +76,21 @@ export default StyleSheet.create({
   },
 
   // IMAGES
-  image: {
+  exampleImage: {
     marginTop: 10,
     width: Dimensions.get('window').width - 50,
     height: 180,
+  },
+  image: {
+    marginTop: 10,
+    marginBottom: 10,
+    width: Dimensions.get('window').width - 20,
+    height: 200,
   },
 
   // INFO CONTAINER
   infoContainer: {
     width: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
     flexDirection: 'row',
   },
   infoLabel: {

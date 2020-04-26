@@ -66,7 +66,7 @@ const Results = ({ response, componentId }) => {
               onInfoPress={() => setShowDisclaimer(true)}
             />
             <ExtraInfo
-              infoLabel=" Chart Legend"
+              infoLabel="Chart Legend"
               onInfoPress={() => setShowLegend(true)}
             />
 

@@ -29,7 +29,7 @@ const ModalInfo = ({
   const image = hasImage ? (
     <Image
       source={require('./example.jpg')}
-      style={generalStyles.image}
+      style={generalStyles.exampleImage}
       resizeMode="contain"
     />
   ) : null;
