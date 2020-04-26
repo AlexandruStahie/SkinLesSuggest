@@ -7,7 +7,7 @@ const Disclaimer = ({ onPressOk }) => {
   const contentToRender = (
     <>
       <View style={generalStyles.modalView}>
-        <Text style={{ fontSize: 17, marginBottom: 10 }}>Disclaimer</Text>
+        <Text style={generalStyles.modalTitle}>Disclaimer</Text>
         <Text style={generalStyles.instrBullet}>
           {'\u25CF'}
           {' '}

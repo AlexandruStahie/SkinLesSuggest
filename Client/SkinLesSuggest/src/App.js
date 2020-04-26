@@ -5,7 +5,6 @@ import jwtDecode from 'jwt-decode';
 import { GoToHomeScreen, GoToMenuScreen } from '../navigation';
 import { getData } from './utils/localStorage';
 import { setHeader } from './utils/requests';
-import { colors } from './utils/consts';
 import generalStyle from './generalStyle';
 
 const App = () => {
@@ -43,17 +42,7 @@ const App = () => {
           source={require('../logo.png')}
           style={generalStyle.logoImage}
         />
-        <Text
-          style={{
-            fontWeight: 'bold',
-            fontSize: 35,
-            textAlign: 'center',
-            justifyContent: 'center',
-            color: colors.customGreen,
-            marginBottom: 40,
-            marginTop: 15
-          }}
-        >
+        <Text style={generalStyle.splashTitle}>
           Skin Lesion Suggestions
         </Text>
       </View>
