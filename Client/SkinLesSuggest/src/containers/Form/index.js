@@ -32,7 +32,6 @@ const Form = ({ componentId, logout }) => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(defaultUserData);
-  const [userHadSavedData, setUserHadSavedData] = useState(false);
 
   useEffect(() => {
     setImage(null);
@@ -66,7 +65,6 @@ const Form = ({ componentId, logout }) => {
           setUserData(defaultUserData);
         } else {
           setUserData(result.data);
-          setUserHadSavedData(true);
         }
         setIsLoading(false);
       })
@@ -194,8 +192,6 @@ const Form = ({ componentId, logout }) => {
         .then((response) => {
           askUserToSaveDetails(response);
           setImage(null);
-          setUserHadSavedData(true);
-          setIsLoading(false);
         })
         .catch(() => {
           dispalyErrorAlert('Something went wrong, please try again.');
@@ -221,15 +217,12 @@ const Form = ({ componentId, logout }) => {
   };
   const askUserToSaveDetails = (response) => {
     const userCompletedFields = checkUserFields();
-    if (userCompletedFields && !userHadSavedData) {
+    if (userCompletedFields) {
       Alert.alert('', 'Do you want to save the compelted informations ?',
         [
           {
             text: 'Yes',
-            onPress: () => {
-              saveUserData();
-              goToResultScreen(response);
-            }
+            onPress: () => saveUserData(response)
           },
           {
             text: 'No',
@@ -239,14 +232,22 @@ const Form = ({ componentId, logout }) => {
     } else {
       goToResultScreen(response);
     }
+
+    setIsLoading(false);
   };
-  const saveUserData = () => {
+  const saveUserData = (response) => {
     getData('token')
       .then((token) => {
         if (token) {
           const decodedToken = jwtDecode(decodeURIComponent(token));
           const { nameid } = decodedToken;
-          post(`/User/userDetails/${nameid}`, userData);
+          post(`/User/userDetails/${nameid}`, userData)
+            .then(() => {
+              goToResultScreen(response);
+            })
+            .catch(() => {
+              goToResultScreen(response);
+            });
         }
       });
   };
