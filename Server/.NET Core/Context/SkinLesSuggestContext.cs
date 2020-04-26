@@ -16,14 +16,17 @@ namespace SkinLesSuggest.Context
         public DbSet<TestDetail> TestDetails { get; set; }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserDetails> UserDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfiguration(new TestTypeConfig());
             modelBuilder.ApplyConfiguration(new TestDetailTypeConfig());
 
-            modelBuilder.ApplyConfiguration(new TestDetailTypeConfig());
+            modelBuilder.ApplyConfiguration(new UserTypeConfig());
+            modelBuilder.ApplyConfiguration(new UserDetailsTypeConfig());
         }
     }
 }

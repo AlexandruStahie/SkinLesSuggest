@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SkinLesSuggest.Context;
+using SkinLesSuggest.Engine;
 using SkinLesSuggest.Helpers;
 using SkinLesSuggest.Services.Implementations;
 using SkinLesSuggest.Services.Interfaces;
@@ -32,6 +34,14 @@ namespace SkinLesSuggest
             services.AddRazorPages();
             services.AddControllers();
             services.AddMvc();
+
+            // Auto Mapper Configurations
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new DefaultMapper());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             //Swagger
             services.AddSwaggerGen(c =>

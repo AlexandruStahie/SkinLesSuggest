@@ -11,6 +11,10 @@ namespace SkinLesSuggest.Models
         public Guid Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public Guid? UserDetailsId { get; set; }
+
+
+        public UserDetails UserDetails { get; set; }
 
         [NotMapped]
         public string Token { get; set; }
