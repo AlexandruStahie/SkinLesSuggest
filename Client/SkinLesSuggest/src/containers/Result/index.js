@@ -6,12 +6,12 @@ import {
 import { BarChart } from 'react-native-chart-kit';
 import { Navigation } from 'react-native-navigation';
 import Modal from 'react-native-modal';
-import styles from './style';
 import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
-import { possibleSolutions, possibleSolutionsShortCuts } from '../../utils/consts';
-import Disclaimer from '../../components/Disclaimer';
-import ChartLegend from '../../components/ChartLegend';
+import {
+  possibleSolutions, possibleSolutionsShortCuts, disclaimers, chartLegend
+} from '../../utils/consts';
+import ModalInfo from '../../components/ModalInfo';
 import ExtraInfo from '../../components/ExtraInfo';
 
 const initialData = [20, 20, 20, 20, 20, 20, 20];
@@ -36,6 +36,22 @@ const Results = ({ response, componentId }) => {
       setData(initialData);
     }
   }, []);
+
+  const extraInfo = suggestion ? [
+    { text: `Suggestion received : ${suggestion}`, key: 1 },
+    { text: 'Please remember that this is just a suggestion', key: 2 },
+    { text: 'For a real diagnostic please contact a dermatologist!', key: 3 }
+  ] : [];
+
+  const extraInfoToDisplay = extraInfo.map((element) => (
+    <Text
+      key={element.key}
+      style={{ textAlign: 'left', fontSize: 15 }}
+    >
+      {'\u25CF   '}
+      {element.text}
+    </Text>
+  ));
 
   const contentToRender = (
     <>
@@ -72,22 +88,9 @@ const Results = ({ response, componentId }) => {
               }}
             />
 
-            {
-              suggestion && (
-              <View style={{ flex: 1, flexDirection: 'row', width: '80%' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ textAlign: 'left', fontSize: 16 }}>
-                    {'\u25CF'}
-                    {' '}
-                    {' '}
-                    {' '}
-                    {`Suggestion received : ${suggestion}` }
-                  </Text>
-
-                </View>
-              </View>
-              )
-            }
+            <View style={{ flex: 1, width: '94%', marginLeft: '2%' }}>
+              {extraInfoToDisplay}
+            </View>
 
             <CustomButton
               customStyle={{ marginTop: 15 }}
@@ -102,7 +105,10 @@ const Results = ({ response, componentId }) => {
         onBackdropPress={() => setShowLegend(false)}
         isVisible={showLegend}
       >
-        <ChartLegend
+        <ModalInfo
+          title="Chart Legend"
+          subtitle=" This chart display the app suggestion, alongside of all other types of injuries that can be identified by the application."
+          infoList={chartLegend}
           onPressOk={() => setShowLegend(false)}
         />
       </Modal>
@@ -110,7 +116,9 @@ const Results = ({ response, componentId }) => {
         onBackdropPress={() => setShowDisclaimer(false)}
         isVisible={showDisclaimer}
       >
-        <Disclaimer
+        <ModalInfo
+          title="Disclaimer"
+          infoList={disclaimers}
           onPressOk={() => setShowDisclaimer(false)}
         />
       </Modal>

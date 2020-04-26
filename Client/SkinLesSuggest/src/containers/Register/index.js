@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import Spinner from 'react-native-loading-spinner-overlay';
 import generalStyles from '../../generalStyle';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
-import { colors } from '../../utils/consts';
 import { isNil } from '../../utils/functions';
 import { post } from '../../utils/requests';
+import Loader from '../../components/Loader';
 
 const defaultErrors = {
   email: false,
@@ -108,11 +107,7 @@ const Register = ({ componentId, goToLoginScreen }) => {
   const contentToRender = (
     <>
       <View style={[generalStyles.containerBase, generalStyles.centerContainer]}>
-        <Spinner
-          visible={isLoading}
-          overlayColor="rgba(255, 255, 255, 0.7)"
-          color={colors.customGreen}
-        />
+        {isLoading && <Loader />}
         <Text style={generalStyles.logoBase}>SkinLesSuggest</Text>
         <CustomTextInput
           showError={errors}

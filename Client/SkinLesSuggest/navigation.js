@@ -28,6 +28,9 @@ Navigation.setDefaultOptions({
     visible: false,
     drawBehind: true,
     animate: false,
+  },
+  layout: {
+    orientation: ['portrait']
   }
 });
 
@@ -44,9 +47,6 @@ const GoToHomeScreen = () => Navigation.setRoot({
       ],
     }
   },
-  layout: {
-    orientation: ['portrait']
-  }
 });
 
 const GoToMenuScreen = () => Navigation.setRoot({
@@ -61,9 +61,6 @@ const GoToMenuScreen = () => Navigation.setRoot({
         }
       ],
     }
-  },
-  layout: {
-    orientation: ['portrait']
   }
 });
 

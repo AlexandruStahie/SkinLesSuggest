@@ -20,8 +20,5 @@ Navigation.events().registerAppLaunchedListener(() => {
         name: 'App'
       },
     },
-    layout: {
-      orientation: ['portrait']
-    }
   });
 });

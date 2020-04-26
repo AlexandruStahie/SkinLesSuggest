@@ -3,14 +3,14 @@ import {
   Text, View, Alert, PermissionsAndroid, Linking, Image
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 import { Navigation } from 'react-native-navigation';
 import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
-import Instructions from '../../components/Instructions';
-import { colors } from '../../utils/consts';
+import ModalInfo from '../../components/ModalInfo';
+import { instructions } from '../../utils/consts';
 import { post } from '../../utils/requests';
+import Loader from '../../components/Loader';
 import ExtraInfo from '../../components/ExtraInfo';
 
 const Form = ({ componentId }) => {
@@ -84,7 +84,6 @@ const Form = ({ componentId }) => {
     switch (source) {
       case 'camera':
         ImagePicker.openCamera(options).then((response) => {
-          console.log('camera response: ', response);
           setImage(response);
         }).catch((err) => {
           if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert('Please try again!'); }
@@ -92,7 +91,6 @@ const Form = ({ componentId }) => {
         break;
       case 'gallery':
         ImagePicker.openPicker(options).then((response) => {
-          console.log('gallery response: ', response);
           setImage(response);
         }).catch((err) => {
           if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert('Please try again!'); }
@@ -149,11 +147,7 @@ const Form = ({ componentId }) => {
 
   const contentToRender = (
     <>
-      <Spinner
-        visible={isLoading}
-        overlayColor="rgba(255, 255, 255, 0.7)"
-        color={colors.customGreen}
-      />
+      {isLoading && <Loader />}
       <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
         <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop]}>SkinLesSuggest</Text>
         <ExtraInfo
@@ -188,7 +182,10 @@ const Form = ({ componentId }) => {
         onBackdropPress={() => setShowInstructions(false)}
         isVisible={showInstructions}
       >
-        <Instructions
+        <ModalInfo
+          title="Instructions for better suggestions"
+          infoList={instructions}
+          hasImage
           onPressOk={() => setShowInstructions(false)}
         />
       </Modal>
