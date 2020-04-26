@@ -49,11 +49,30 @@ const chartLegend = [
   { text: 'vasc - Vascular lesions', key: 7 },
 ];
 
+const localizationValues = [
+  'Scalp',
+  'Ear',
+  'Face',
+  'Back',
+  'Trunk',
+  'Chest',
+  'Upper extremity',
+  'Abdomen',
+  'Lower extremity',
+  'Genital',
+  'Neck',
+  'Hand',
+  'Foot',
+  'Acral',
+  'Other'
+];
+
 export {
   colors,
   possibleSolutions,
   possibleSolutionsShortCuts,
   instructions,
   disclaimers,
-  chartLegend
+  chartLegend,
+  localizationValues
 };

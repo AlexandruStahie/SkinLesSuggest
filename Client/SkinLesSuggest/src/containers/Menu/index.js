@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import { GoToHomeScreen } from '../../../navigation';
 import { clearStore } from '../../utils/localStorage';
 import CustomButton from '../../components/CustomButton';
-import { get } from '../../utils/requests';
 import generalStyles from '../../generalStyle';
 import Loader from '../../components/Loader';
 
-const Menu = () => {
+const Menu = ({ componentId }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,8 +21,16 @@ const Menu = () => {
     setIsLoading(false);
   };
 
-  const testAuth = () => {
-    get('/User/testAuth');
+  // const testAuth = () => {
+  //   get('/User/testAuth');
+  // };
+
+  const goToScreen = (screenName) => {
+    Navigation.push(componentId, {
+      component: {
+        name: screenName
+      }
+    });
   };
 
   const contentToRender = (
@@ -32,14 +40,24 @@ const Menu = () => {
         <Text style={generalStyles.logoBase}>SkinLesSuggest</Text>
 
         <CustomButton
+          text="Get Suggestion"
+          onPress={() => goToScreen('GetSuggestion')}
+        />
+
+        <CustomButton
+          text="History"
+          onPress={() => goToScreen('History')}
+        />
+
+        <CustomButton
           text="Logout"
           onPress={logout}
         />
 
-        <CustomButton
+        {/* <CustomButton
           text="Test Auth"
           onPress={testAuth}
-        />
+        /> */}
       </View>
     </>
   );

@@ -45,10 +45,12 @@ const Home = ({ componentId }) => {
           text="Get Suggestion"
           onPress={() => goToScreen('GetSuggestion')}
         />
+
         <CustomButton
           text="Login"
           onPress={() => goToScreen('Login')}
         />
+
         <CustomButton
           text="Register"
           onPress={goToRegister}

@@ -63,7 +63,7 @@ const Login = ({ newEmail, newPass }) => {
             setIsLoading(false);
           }
         })
-        .catch((err) => {
+        .catch(() => {
           const errorMsg = 'Something went wrong, please try again!';
           setErrorMessage(errorMsg);
           setIsLoading(false);
@@ -118,14 +118,15 @@ const Login = ({ newEmail, newPass }) => {
           showError={errors}
           value={email}
           name="email"
-          placeholder="Email..."
+          placeholder="Email"
+          type="email-address"
           setField={setField}
         />
         <CustomTextInput
           showError={errors}
           value={password}
           name="password"
-          placeholder="Password..."
+          placeholder="Password"
           setField={setField}
           secureTextEntry
         />

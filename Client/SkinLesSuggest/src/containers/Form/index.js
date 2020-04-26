@@ -1,28 +1,79 @@
+/* eslint-disable no-restricted-globals */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, Alert, PermissionsAndroid, Linking, Image
+  Text, View, Alert, PermissionsAndroid, Linking, Image, ScrollView
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
 import { Navigation } from 'react-native-navigation';
+import jwtDecode from 'jwt-decode';
 import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
 import ModalInfo from '../../components/ModalInfo';
+import { getData } from '../../utils/localStorage';
 import { instructions } from '../../utils/consts';
+import { isNil } from '../../utils/functions';
 import { post } from '../../utils/requests';
 import Loader from '../../components/Loader';
 import ExtraInfo from '../../components/ExtraInfo';
+import UserForm from './userForm';
+
+const defaultUserData = {
+  firstName: '',
+  lastName: '',
+  age: '',
+  gender: '',
+  localization: ''
+};
 
 const Form = ({ componentId }) => {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(defaultUserData);
 
   useEffect(() => {
     setImage(null);
     setIsLoading(false);
+
+    const userLoggedIn = checkUserIsLoggedIn();
+    console.log(userLoggedIn);
+    setUserIsLoggedIn(true);
   }, []);
 
+  // User Fields Methods
+  const checkUserIsLoggedIn = () => {
+    getData('token')
+      .then((token) => {
+        if (token) {
+          const { exp } = jwtDecode(decodeURIComponent(token));
+          if (exp >= new Date().getTime() / 1000) {
+            return true;
+          }
+        }
+
+        return false;
+      })
+      .catch(() => false);
+  };
+  const setField = (field, value) => {
+    const userDataClone = { ...userData };
+
+    if (!isNil(field) && !isNil(value)) {
+      if (field === 'age') {
+        if (value % 1 === 0 && value >= 0 && value < 120 && !value.toString().includes('.')) {
+          userDataClone[field] = value.trim();
+        }
+      } else {
+        userDataClone[field] = value;
+      }
+    }
+
+    setUserData(userDataClone);
+  };
+
+  // Attach Image Methods
   const checkPermissions = (callback) => {
     const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -45,7 +96,6 @@ const Form = ({ componentId }) => {
         return callback(false);
       });
   };
-
   const alertPermissionIssue = () => {
     Alert.alert(
       'Error',
@@ -56,7 +106,6 @@ const Form = ({ componentId }) => {
       ],
     );
   };
-
   const attachImage = () => {
     checkPermissions((permissionsGranted) => {
       if (permissionsGranted) {
@@ -72,7 +121,6 @@ const Form = ({ componentId }) => {
       }
     });
   };
-
   const getImage = (source) => {
     const options = {
       cropping: true,
@@ -102,10 +150,12 @@ const Form = ({ componentId }) => {
     }
   };
 
+  // Errors
   const dispalyErrorAlert = (text) => {
     Alert.alert('Error', text, [{ text: 'ok', onPress: () => { } }]);
   };
 
+  // Requests
   const getImageBody = () => {
     const pathV = image.path.split('/');
     return {
@@ -115,7 +165,6 @@ const Form = ({ componentId }) => {
       data: image.data,
     };
   };
-
   const getSuggestion = () => {
     if (image) {
       setIsLoading(true);
@@ -148,23 +197,33 @@ const Form = ({ componentId }) => {
   const contentToRender = (
     <>
       {isLoading && <Loader />}
-      <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
-        <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop]}>SkinLesSuggest</Text>
-        <ExtraInfo
-          infoLabel="Check Instructions"
-          onInfoPress={() => setShowInstructions(true)}
-        />
-        <CustomButton
-          customStyle={{ marginTop: 10 }}
-          text="Attach Image"
-          onPress={attachImage}
-        />
-        <CustomButton
-          text="Get Suggestion"
-          onPress={getSuggestion}
-        />
+      <View style={{ flex: 1 }}>
+        <ScrollView>
+          <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
+            <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop]}>SkinLesSuggest</Text>
 
-        {
+            <UserForm
+              userIsLoggedIn
+              userData={userData}
+              setField={setField}
+            />
+
+            <ExtraInfo
+              infoLabel="Attach Image Instructions"
+              onInfoPress={() => setShowInstructions(true)}
+            />
+            <CustomButton
+              customStyle={{ marginTop: 10 }}
+              text="Attach Image"
+              onPress={attachImage}
+            />
+            <CustomButton
+              customStyle={{ marginTop: 15 }}
+              text="Get Suggestion"
+              onPress={getSuggestion}
+            />
+
+            {
           image ? (
             <Image
               source={{
@@ -176,6 +235,8 @@ const Form = ({ componentId }) => {
           ) : null
         }
 
+          </View>
+        </ScrollView>
       </View>
 
       <Modal
