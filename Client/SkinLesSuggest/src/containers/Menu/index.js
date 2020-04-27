@@ -7,7 +7,7 @@ import { clearStore, getData } from '../../utils/localStorage';
 import CustomButton from '../../components/CustomButton';
 import generalStyles from '../../generalStyle';
 import Loader from '../../components/Loader';
-import { del } from '../../utils/requests';
+import { del, get } from '../../utils/requests';
 
 const Menu = ({ componentId }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,9 +23,9 @@ const Menu = ({ componentId }) => {
     setIsLoading(false);
   };
 
-  // const testAuth = () => {
-  //   get('/User/testAuth');
-  // };
+  const testAuth = () => {
+    get('/User/testAuth');
+  };
 
   const goToScreen = (screenName) => {
     Navigation.push(componentId, {
@@ -96,10 +96,10 @@ const Menu = ({ componentId }) => {
           onPress={logout}
         />
 
-        {/* <CustomButton
+        <CustomButton
           text="Test Auth"
           onPress={testAuth}
-        /> */}
+        />
       </View>
     </>
   );

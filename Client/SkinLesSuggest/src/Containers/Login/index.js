@@ -61,7 +61,7 @@ const Login = ({ newEmail, newPass }) => {
             // const token = response.token;
 
             storeToken(token);
-            setHeader('Authorization', `Bearer ${token}`);
+            setHeader(token);
             GoToMenuScreen();
             setIsLoading(false);
           }
