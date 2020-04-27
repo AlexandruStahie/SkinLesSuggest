@@ -21,8 +21,12 @@ const handleErrors = (errors) => {
   console.log('request errors: ', errors);
 };
 
-const setHeader = (headerName, headerValue) => {
-  instance.defaults.headers.common[headerName] = headerValue;
+const setHeader = (headerValue) => {
+  instance.defaults.headers.common.Authorization = `Bearer ${headerValue}`;
+};
+
+const removeHeader = () => {
+  instance.defaults.headers.common.Authorization = null;
 };
 
 const post = async (url, data, config) => {
@@ -61,4 +65,5 @@ export {
   get,
   del,
   setHeader,
+  removeHeader
 };

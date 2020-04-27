@@ -22,7 +22,7 @@ const App = () => {
         const decodedToken = jwtDecode(decodeURIComponent(token));
         const { exp } = decodedToken;
         if (exp >= new Date().getTime() / 1000) {
-          setHeader('Authorization', `Bearer ${token}`);
+          setHeader(token);
           GoToMenuScreen();
         } else {
           GoToHomeScreen();
