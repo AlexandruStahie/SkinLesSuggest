@@ -1,5 +1,8 @@
 /* eslint-disable consistent-return */
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
+import { getData } from './localStorage';
+import { logOutUser } from './functions';
 
 const localTest = true;
 const getBaseUrl = () => {
@@ -15,10 +18,27 @@ const instance = axios.create({
   timeout: 1800000,
   headers: { 'Content-Type': 'application/json' }
 });
+
 const parseErrors = (error) => error;
 
 const handleErrors = (errors) => {
   console.log('request errors: ', errors);
+
+  getData('token')
+    .then((token) => {
+      if (token) {
+        console.log('token found');
+        const decodedToken = jwtDecode(decodeURIComponent(token));
+        const { exp } = decodedToken;
+        if (exp < new Date().getTime() / 1000) {
+          console.log('token expired');
+          return logOutUser();
+        }
+      }
+    }).catch(() => {
+      console.log('token find error');
+      logOutUser();
+    });
 };
 
 const setHeader = (headerValue) => {
@@ -28,6 +48,8 @@ const setHeader = (headerValue) => {
 const removeHeader = () => {
   instance.defaults.headers.common.Authorization = null;
 };
+
+const getHeader = () => instance.defaults.headers.common.Authorization;
 
 const post = async (url, data, config) => {
   try {
@@ -65,5 +87,6 @@ export {
   get,
   del,
   setHeader,
-  removeHeader
+  removeHeader,
+  getHeader
 };

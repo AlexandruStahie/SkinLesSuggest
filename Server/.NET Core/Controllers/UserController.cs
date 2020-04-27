@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SkinLesSuggest.Helpers;
 using SkinLesSuggest.Models;
 using SkinLesSuggest.Services.Implementations;
 using SkinLesSuggest.Services.Interfaces;
@@ -18,12 +22,12 @@ namespace SkinLesSuggest.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
-            _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [AllowAnonymous]
@@ -50,35 +54,10 @@ namespace SkinLesSuggest.Controllers
         }
 
         [HttpGet("testAuth")]
-        public IActionResult TestAuth()
+        public IActionResult TestAuthAsync()
         {
+            var userId = _httpContextAccessor.HttpContext.User.GetLoggedInUserId<string>();
             return Ok();
-        }
-
-
-        [HttpGet("userDetails/{id:guid}")]
-        public async Task<UserDetailsViewModel> GetUserDetails(Guid id)
-        {
-            UserDetails userDetails = await _userService.GetUserDetails(id);
-            if (userDetails == null)
-                return null;
-
-            return _mapper.Map<UserDetailsViewModel>(userDetails);
-        }
-
-        [HttpPost("userDetails/{id:guid}")]
-        public async Task<IActionResult> SaveUserDetails(Guid id, [FromBody] UserDetailsViewModel model)
-        {
-            UserDetails userDetails = _mapper.Map<UserDetails>(model);
-            await _userService.SaveUserDetails(id, userDetails);
-            return Ok();
-        }
-
-        [HttpDelete("userDetails/{id:guid}")]
-        public async Task<IActionResult> ClearUserDetails(Guid id)
-        {
-            await _userService.ClearUserDetails(id);
-            return new JsonResult(new { message = "All your saved data was deleted" });
         }
     }
 }

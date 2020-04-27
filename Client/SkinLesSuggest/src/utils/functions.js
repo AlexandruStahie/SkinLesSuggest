@@ -1,3 +1,19 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/prefer-default-export */
+import { setHeader, removeHeader } from './requests';
+import { storeToken, clearStore } from './localStorage';
+import { GoToMenuScreen, GoToHomeScreen } from '../../navigation';
 
 export const isNil = (value) => value === undefined && value === null;
+
+export const logInUser = (token) => {
+  storeToken(token);
+  setHeader(token);
+  GoToMenuScreen();
+};
+
+export const logOutUser = () => {
+  clearStore();
+  removeHeader();
+  GoToHomeScreen();
+};

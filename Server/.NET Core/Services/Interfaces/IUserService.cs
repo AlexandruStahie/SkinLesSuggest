@@ -10,11 +10,6 @@ namespace SkinLesSuggest.Services.Interfaces
     {
         public Task<bool> CheckDuplicateEmail(string email);
         public Task Register(string email, string password);
-
         public Task<User> Authenticate(string email, string password);
-
-        public Task<UserDetails> GetUserDetails(Guid id);
-        Task SaveUserDetails(Guid id, UserDetails userDetails);
-        Task ClearUserDetails(Guid id);
     }
 }
