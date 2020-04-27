@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable no-restricted-globals */
 import React, { useState, useEffect } from 'react';
 import {
@@ -6,14 +7,12 @@ import {
 import ImagePicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
 import { Navigation } from 'react-native-navigation';
-import jwtDecode from 'jwt-decode';
 import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
 import ModalInfo from '../../components/ModalInfo';
-import { getData } from '../../utils/localStorage';
 import { instructions } from '../../utils/consts';
 import { isNil } from '../../utils/functions';
-import { get, post } from '../../utils/requests';
+import { get, post, getHeader } from '../../utils/requests';
 import Loader from '../../components/Loader';
 import ExtraInfo from '../../components/ExtraInfo';
 import UserForm from './userForm';
@@ -21,12 +20,12 @@ import UserForm from './userForm';
 const defaultUserData = {
   firstName: '',
   lastName: '',
-  age: '',
+  age: null,
   gender: '',
   localization: ''
 };
 
-const Form = ({ componentId, logout }) => {
+const Form = ({ componentId }) => {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -35,43 +34,30 @@ const Form = ({ componentId, logout }) => {
 
   useEffect(() => {
     setImage(null);
-
-    getData('token')
-      .then((token) => {
-        if (token) {
-          const decodedToken = jwtDecode(decodeURIComponent(token));
-          const { exp, nameid } = decodedToken;
-          if (exp >= new Date().getTime() / 1000) {
-            setUserIsLoggedIn(true);
-            checkUserData(nameid);
-          } else if (logout) {
-            logout();
-            setIsLoading(false);
-          }
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
+    checkUserData();
   }, []);
 
   // User Form Methods
-  const checkUserData = (userId) => {
-    get(`/User/userDetails/${userId}`)
-      .then((result) => {
-        if (result == null || result.data == null) {
+  const checkUserData = () => {
+    const checkLoggedInUser = getHeader();
+    if (checkLoggedInUser) {
+      setUserIsLoggedIn(true);
+      get('/UserDetails')
+        .then((result) => {
+          if (result && result.data) {
+            setUserData(result.data);
+          } else {
+            setUserData(defaultUserData);
+          }
+          setIsLoading(false);
+        })
+        .catch(() => {
           setUserData(defaultUserData);
-        } else {
-          setUserData(result.data);
-        }
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setUserData(defaultUserData);
-        setIsLoading(false);
-      });
+          setIsLoading(false);
+        });
+    } else {
+      setUserIsLoggedIn(false);
+    }
   };
   const setField = (field, value) => {
     const userDataClone = { ...userData };
@@ -79,7 +65,7 @@ const Form = ({ componentId, logout }) => {
     if (!isNil(field) && !isNil(value)) {
       if (field === 'age') {
         if (value % 1 === 0 && value >= 0 && value < 120 && !value.toString().includes('.')) {
-          userDataClone[field] = value.trim();
+          userDataClone[field] = value;
         }
       } else {
         userDataClone[field] = value;
@@ -191,7 +177,6 @@ const Form = ({ componentId, logout }) => {
       post(endpoint, imageBody, config)
         .then((response) => {
           askUserToSaveDetails(response);
-          setImage(null);
         })
         .catch(() => {
           dispalyErrorAlert('Something went wrong, please try again.');
@@ -216,42 +201,23 @@ const Form = ({ componentId, logout }) => {
     return false;
   };
   const askUserToSaveDetails = (response) => {
-    const userCompletedFields = checkUserFields();
-    if (userCompletedFields) {
-      Alert.alert('', 'Do you want to save the compelted informations ?',
-        [
-          {
-            text: 'Yes',
-            onPress: () => saveUserData(response)
-          },
-          {
-            text: 'No',
-            onPress: () => goToResultScreen(response)
-          }
-        ]);
+    if (userIsLoggedIn && checkUserFields()) {
+      Alert.alert('', 'Do you want to save or update this informations?',
+        [{ text: 'Yes', onPress: () => saveUserData(response) },
+          { text: 'No', onPress: () => goToResultScreen(response) }]);
     } else {
       goToResultScreen(response);
     }
-
     setIsLoading(false);
   };
   const saveUserData = (response) => {
-    getData('token')
-      .then((token) => {
-        if (token) {
-          const decodedToken = jwtDecode(decodeURIComponent(token));
-          const { nameid } = decodedToken;
-          post(`/User/userDetails/${nameid}`, userData)
-            .then(() => {
-              goToResultScreen(response);
-            })
-            .catch(() => {
-              goToResultScreen(response);
-            });
-        }
+    post('/UserDetails', userData)
+      .then(() => {
+        goToResultScreen(response);
       });
   };
   const goToResultScreen = (response) => {
+    setImage(null);
     Navigation.push(componentId, {
       component: {
         name: 'Result',
@@ -283,23 +249,26 @@ const Form = ({ componentId, logout }) => {
               text="Attach Image"
               onPress={attachImage}
             />
+
+            <View style={generalStyles.image}>
+              {
+                image ? (
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${image.data}`,
+                    }}
+                    style={generalStyles.image}
+                    resizeMode="contain"
+                  />
+                ) : null
+              }
+            </View>
+
             <CustomButton
               customStyle={{ marginTop: 15 }}
               text="Get Suggestion"
               onPress={getSuggestion}
             />
-
-            {
-              image ? (
-                <Image
-                  source={{
-                    uri: `data:image/jpeg;base64,${image.data}`,
-                  }}
-                  style={generalStyles.image}
-                  resizeMode="contain"
-                />
-              ) : null
-            }
           </View>
         </ScrollView>
       </View>

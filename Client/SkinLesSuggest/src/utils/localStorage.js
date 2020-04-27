@@ -1,14 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import jwtDecode from 'jwt-decode';
 
 const storeToken = async (token) => {
-  const decodedToken = jwtDecode(decodeURIComponent(token));
   const promises = [];
-
   promises.push(AsyncStorage.setItem('token', token));
-  promises.push(AsyncStorage.setItem('id', decodedToken.nameid));
-  promises.push(AsyncStorage.setItem('email', decodedToken.email));
-
   Promise.all(promises);
 };
 

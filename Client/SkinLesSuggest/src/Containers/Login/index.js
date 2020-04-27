@@ -5,7 +5,7 @@ import generalStyles from '../../generalStyle';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
-import { isNil } from '../../utils/functions';
+import { isNil, logInUser } from '../../utils/functions';
 import { post, setHeader } from '../../utils/requests';
 import { GoToMenuScreen } from '../../../navigation';
 import { storeToken } from '../../utils/localStorage';
@@ -57,12 +57,7 @@ const Login = ({ newEmail, newPass }) => {
             setErrorMessage(response.message);
             setIsLoading(false);
           } else {
-            const token = response;
-            // const token = response.token;
-
-            storeToken(token);
-            setHeader(token);
-            GoToMenuScreen();
+            logInUser(response);
             setIsLoading(false);
           }
         })

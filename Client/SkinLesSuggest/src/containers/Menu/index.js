@@ -1,28 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Text, View, Alert } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import jwtDecode from 'jwt-decode';
-import { GoToHomeScreen } from '../../../navigation';
-import { clearStore, getData } from '../../utils/localStorage';
 import CustomButton from '../../components/CustomButton';
 import generalStyles from '../../generalStyle';
 import Loader from '../../components/Loader';
 import { del, get } from '../../utils/requests';
+import { logOutUser } from '../../utils/functions';
 
 const Menu = ({ componentId }) => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const logout = () => {
     setIsLoading(true);
-    clearStore();
-    GoToHomeScreen();
+    logOutUser();
     setIsLoading(false);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const testAuth = () => {
     get('/User/testAuth');
   };
@@ -38,35 +32,18 @@ const Menu = ({ componentId }) => {
     });
   };
 
-  const clearUserData = () => {
+  const clearUserDetails = () => {
     setIsLoading(true);
-    getData('token')
-      .then((token) => {
-        if (token) {
-          const decodedToken = jwtDecode(decodeURIComponent(token));
-          const { exp, nameid } = decodedToken;
-          if (exp >= new Date().getTime() / 1000) {
-            del(`/User/userDetails/${nameid}`)
-              .then((response) => {
-                setIsLoading(false);
-                console.log('message', response);
-                if (response && response.data && response.data.message) {
-                  Alert.alert(
-                    response.data.message,
-                    'Thank you for using the SkinLesSuggest application',
-                    [{ text: 'Ok', onPress: () => { } }]
-                  );
-                }
-              });
-          } else {
-            logout();
-            setIsLoading(false);
-          }
-        }
-      })
-      .catch(() => {
-        logout();
+    del('/UserDetails')
+      .then((response) => {
         setIsLoading(false);
+        if (response && response.data && response.data.message) {
+          Alert.alert(
+            response.data.message,
+            'Thank you for using the SkinLesSuggest application',
+            [{ text: 'Ok', onPress: () => { } }]
+          );
+        }
       });
   };
 
@@ -88,7 +65,7 @@ const Menu = ({ componentId }) => {
 
         <CustomButton
           text="Clear User Data"
-          onPress={clearUserData}
+          onPress={clearUserDetails}
         />
 
         <CustomButton
@@ -96,10 +73,10 @@ const Menu = ({ componentId }) => {
           onPress={logout}
         />
 
-        <CustomButton
+        {/* <CustomButton
           text="Test Auth"
           onPress={testAuth}
-        />
+        /> */}
       </View>
     </>
   );

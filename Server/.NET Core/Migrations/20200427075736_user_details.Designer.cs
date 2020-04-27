@@ -10,8 +10,8 @@ using SkinLesSuggest.Context;
 namespace SkinLesSuggest.Migrations
 {
     [DbContext(typeof(SkinLesSuggestContext))]
-    [Migration("20200426160125_UserDetails")]
-    partial class UserDetails
+    [Migration("20200427075736_user_details")]
+    partial class user_details
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,19 +69,16 @@ namespace SkinLesSuggest.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserDetailsId");
-
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SkinLesSuggest.Models.UserDetails", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+                    b.Property<string>("Age")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
@@ -106,11 +103,13 @@ namespace SkinLesSuggest.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SkinLesSuggest.Models.User", b =>
+            modelBuilder.Entity("SkinLesSuggest.Models.UserDetails", b =>
                 {
-                    b.HasOne("SkinLesSuggest.Models.UserDetails", "UserDetails")
-                        .WithMany()
-                        .HasForeignKey("UserDetailsId");
+                    b.HasOne("SkinLesSuggest.Models.User", null)
+                        .WithOne("UserDetails")
+                        .HasForeignKey("SkinLesSuggest.Models.UserDetails", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

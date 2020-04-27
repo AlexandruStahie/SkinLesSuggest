@@ -82,8 +82,6 @@ export default StyleSheet.create({
     height: 180,
   },
   image: {
-    marginTop: 10,
-    marginBottom: 10,
     width: Dimensions.get('window').width - 20,
     height: 200,
   },

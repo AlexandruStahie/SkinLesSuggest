@@ -65,7 +65,6 @@ namespace SkinLesSuggest.Services.Implementations
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] {
-                    new Claim(ClaimTypes.Email, user.Email.ToString()),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
@@ -77,52 +76,6 @@ namespace SkinLesSuggest.Services.Implementations
             return user.WithoutPassword();
         }
 
-        public async Task<UserDetails> GetUserDetails(Guid id)
-        {
-            User user = await _dbContext.Users.Where(x => x.Id == id).Include(x => x.UserDetails).FirstOrDefaultAsync();
-            if (user == null)
-                return null;
-
-            else return user.UserDetails;
-        }
-        public async Task SaveUserDetails(Guid id, UserDetails userDetails)
-        {
-            User user = await _dbContext.Users.Where(x => x.Id == id).Include(x => x.UserDetails).FirstOrDefaultAsync();
-            if (user != null)
-            {
-                if (user.UserDetails == null)
-                {
-                    UserDetails details = new UserDetails()
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = userDetails.FirstName,
-                        LastName = userDetails.LastName,
-                        Age = userDetails.Age,
-                        Gender = userDetails.Gender,
-                    };
-
-                    user.UserDetailsId = details.Id;
-                    user.UserDetails = details;
-                }
-                else
-                {
-                    user.UserDetails.FirstName = userDetails.FirstName;
-                    user.UserDetails.LastName = userDetails.LastName;
-                    user.UserDetails.Age = userDetails.Age;
-                    user.UserDetails.Gender = userDetails.Gender;
-                }
-
-                _dbContext.Users.Update(user);
-                await _dbContext.SaveChangesAsync();
-            }
-        }
-        public async Task ClearUserDetails(Guid id)
-        {
-            User user = await _dbContext.Users.Where(x => x.Id == id).Include(x => x.UserDetails).FirstOrDefaultAsync();
-            user.UserDetails = null;
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
-        }
 
         private string getHashedPassword(string originalPass)
         {
