@@ -36,13 +36,6 @@ const UserForm = ({
               options={['Male', 'Female']}
               setField={setField}
             />
-            {/* <CustomDropDown
-              name="localization"
-              defaultValue="Localization"
-              value={userData.localization}
-              options={localizationValues}
-              setField={setField}
-            /> */}
           </>
         ) : null
     }

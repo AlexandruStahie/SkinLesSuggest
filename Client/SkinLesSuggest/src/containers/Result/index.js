@@ -184,10 +184,20 @@ const Results = ({
             />
 
             {userIsLoggedIn === true && hideSaveButton === false && (
+              <>
+                <CustomButton
+                  customStyle={{ marginTop: 15 }}
+                  text="Save Suggestion In History"
+                  onPress={() => setShowSaveToHistoryModal(true)}
+                />
+              </>
+            )}
+
+            {userIsLoggedIn === true && (
               <CustomButton
                 customStyle={{ marginTop: 15 }}
-                text="Save Suggestion In History"
-                onPress={() => setShowSaveToHistoryModal(true)}
+                text="Go To Menu Screen"
+                onPress={GoToMenuScreen}
               />
             )}
           </View>
