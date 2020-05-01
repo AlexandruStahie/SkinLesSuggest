@@ -20,7 +20,6 @@ const defaultUserData = {
   lastName: '',
   age: null,
   gender: '',
-  localization: ''
 };
 
 const Form = ({ componentId }) => {
@@ -177,20 +176,11 @@ const Form = ({ componentId }) => {
   };
 
   // Requests and logic
-  const getImageBody = () => {
-    const pathV = image.path.split('/');
-    return {
-      uri: image.path,
-      name: pathV[pathV.length - 1],
-      type: image.mime,
-      data: image.data,
-    };
-  };
   const getSuggestion = () => {
     if (image) {
       setIsLoading(true);
       const endpoint = 'https://skinlessuggest-predapp.herokuapp.com/predict';
-      const imageBody = getImageBody();
+      const imageBody = { data: image.data };
       const config = { 'Content-Type': 'multipart/form-data' };
 
       post(endpoint, imageBody, config)
@@ -227,6 +217,8 @@ const Form = ({ componentId }) => {
         name: 'Result',
         passProps: {
           response,
+          userIsLoggedIn,
+          imageData: image.data,
           mimeFormComponentDidMount: () => mimeComponentDidMount()
         }
       }

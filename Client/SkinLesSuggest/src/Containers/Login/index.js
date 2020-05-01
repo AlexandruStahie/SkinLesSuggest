@@ -6,9 +6,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 import { TestEmail } from '../../utils/regexs';
 import { isNil, logInUser } from '../../utils/functions';
-import { post, setHeader } from '../../utils/requests';
-import { GoToMenuScreen } from '../../../navigation';
-import { storeToken } from '../../utils/localStorage';
+import { post } from '../../utils/requests';
 import Loader from '../../components/Loader';
 
 const defaultErrors = {
