@@ -19,35 +19,51 @@ namespace SkinLesSuggest.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("SkinLesSuggest.Models.Test", b =>
+            modelBuilder.Entity("SkinLesSuggest.Models.Lesion", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("MigrationTest")
+                    b.Property<string>("Localization")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Lesions");
+                });
+
+            modelBuilder.Entity("SkinLesSuggest.Models.Suggestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<Guid>("LesionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SuggestionReceived")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tests");
-                });
+                    b.HasIndex("LesionId");
 
-            modelBuilder.Entity("SkinLesSuggest.Models.TestDetail", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TestId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TestId")
-                        .IsUnique();
-
-                    b.ToTable("TestDetails");
+                    b.ToTable("Suggestions");
                 });
 
             modelBuilder.Entity("SkinLesSuggest.Models.User", b =>
@@ -92,11 +108,20 @@ namespace SkinLesSuggest.Migrations
                     b.ToTable("UserDetails");
                 });
 
-            modelBuilder.Entity("SkinLesSuggest.Models.TestDetail", b =>
+            modelBuilder.Entity("SkinLesSuggest.Models.Lesion", b =>
                 {
-                    b.HasOne("SkinLesSuggest.Models.Test", "Test")
-                        .WithOne()
-                        .HasForeignKey("SkinLesSuggest.Models.TestDetail", "TestId")
+                    b.HasOne("SkinLesSuggest.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SkinLesSuggest.Models.Suggestion", b =>
+                {
+                    b.HasOne("SkinLesSuggest.Models.Lesion", "Lesion")
+                        .WithMany()
+                        .HasForeignKey("LesionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

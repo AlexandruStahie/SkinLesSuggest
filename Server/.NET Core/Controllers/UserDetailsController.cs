@@ -16,7 +16,7 @@ namespace SkinLesSuggest.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class UserDetailsController : Controller
+    public class UserDetailsController : ControllerBase
     {
         private readonly IUserDetailsService _userDetailsService;
         private readonly IMapper _mapper;

@@ -84,9 +84,9 @@ namespace SkinLesSuggest
             });
 
             // Services
-            services.AddScoped<ITestService, TestService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserDetailsService, UserDetailsService>();
+            services.AddScoped<ILesionService, LesionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

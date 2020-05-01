@@ -14,7 +14,8 @@ namespace SkinLesSuggest.Models
         public Guid? UserDetailsId { get; set; }
 
 
-        public UserDetails UserDetails { get; set; }
+        public virtual UserDetails UserDetails { get; set; }
+
 
         [NotMapped]
         public string Token { get; set; }

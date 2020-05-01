@@ -8,28 +8,25 @@ using System.Threading.Tasks;
 
 namespace SkinLesSuggest.Services.Implementations
 {
-    public class TestService : ITestService
+    public class LesionService : ILesionService
     {
         private readonly SkinLesSuggestContext _dbContext;
 
-        public TestService(SkinLesSuggestContext dbContext)
+        public LesionService(SkinLesSuggestContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task AddTestRecord()
+        public async Task SaveLesionDetails(Lesion lesion, Suggestion suggestion)
         {
-            Test test = new Test() { 
-                Id = Guid.NewGuid(),
-                MigrationTest = "Test"
-            };
-
-            TestDetail testDetail = new TestDetail() { 
-                Test = test
-            };
-
-            await _dbContext.TestDetails.AddAsync(testDetail);
+            await _dbContext.Lesions.AddAsync(lesion);
+            await _dbContext.Suggestions.AddAsync(suggestion);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Lesion>> GetAllUserLesions(Guid userId)
+        {
+            return new List<Lesion>();
         }
     }
 }

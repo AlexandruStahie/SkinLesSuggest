@@ -12,21 +12,19 @@ namespace SkinLesSuggest.Context
     {
         public SkinLesSuggestContext(DbContextOptions<SkinLesSuggestContext> options) : base(options) { }
 
-        public DbSet<Test> Tests { get; set; }
-        public DbSet<TestDetail> TestDetails { get; set; }
-
         public DbSet<User> Users { get; set; }
         public DbSet<UserDetails> UserDetails { get; set; }
+        public DbSet<Lesion> Lesions { get; set; }
+        public DbSet<Suggestion> Suggestions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new TestTypeConfig());
-            modelBuilder.ApplyConfiguration(new TestDetailTypeConfig());
-
             modelBuilder.ApplyConfiguration(new UserTypeConfig());
             modelBuilder.ApplyConfiguration(new UserDetailsTypeConfig());
+            modelBuilder.ApplyConfiguration(new LesionTypeConfig());
+            modelBuilder.ApplyConfiguration(new SuggestionTypeConfig());
         }
     }
 }
