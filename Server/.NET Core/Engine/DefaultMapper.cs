@@ -19,6 +19,10 @@ namespace SkinLesSuggest.Engine
             CreateMap<LesionViewModel, Suggestion>()
                 .ForMember(x => x.SuggestionReceived, y => y.MapFrom(h => h.Suggestion))
                 .ForMember(x => x.Image, y => y.MapFrom(h => System.Text.Encoding.Unicode.GetBytes(h.Image)));
+
+            CreateMap<Suggestion, SuggestionViewModel>()
+                .ForMember(x => x.Suggestion , y => y.MapFrom(h => h.SuggestionReceived))
+                .ForMember(x => x.Image, y => y.MapFrom(h => System.Text.Encoding.Unicode.GetString(h.Image)));
         }
     }
 }

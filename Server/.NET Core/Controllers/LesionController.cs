@@ -53,5 +53,12 @@ namespace SkinLesSuggest.Controllers
             List<Lesion> userLesions = await _lesionService.GetAllUserLesions(Guid.Parse(userId));
             return _mapper.Map<List<LesionViewModel>>(userLesions);
         }
+
+        [HttpGet("{lesionId:guid}")]
+        public async Task<List<SuggestionViewModel>> GetLesionSuggestions(Guid lesionId)
+        {
+            List<Suggestion> lesionSuggestions = await _lesionService.GetLesionSuggestions(lesionId);
+            return _mapper.Map<List<SuggestionViewModel>>(lesionSuggestions);
+        }
     }
 }
