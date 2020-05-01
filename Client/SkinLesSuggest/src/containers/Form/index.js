@@ -1,6 +1,4 @@
-/* eslint-disable radix */
-/* eslint-disable no-restricted-globals */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text, View, Alert, PermissionsAndroid, Linking, Image, ScrollView
 } from 'react-native';
@@ -11,7 +9,7 @@ import generalStyles from '../../generalStyle';
 import CustomButton from '../../components/CustomButton';
 import ModalInfo from '../../components/ModalInfo';
 import { instructions } from '../../utils/consts';
-import { isNil } from '../../utils/functions';
+import { isNil, compareObjects } from '../../utils/functions';
 import { get, post, getHeader } from '../../utils/requests';
 import Loader from '../../components/Loader';
 import ExtraInfo from '../../components/ExtraInfo';
@@ -31,11 +29,17 @@ const Form = ({ componentId }) => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(defaultUserData);
+  const [freezedUserData, setFreezedUserData] = useState(defaultUserData);
+
+  const scrollViewRef = useRef();
 
   useEffect(() => {
-    setImage(null);
-    checkUserData();
+    mimeComponentDidMount();
   }, []);
+  const mimeComponentDidMount = () => {
+    setIsLoading(true);
+    checkUserData();
+  };
 
   // User Form Methods
   const checkUserData = () => {
@@ -44,11 +48,8 @@ const Form = ({ componentId }) => {
       setUserIsLoggedIn(true);
       get('/UserDetails')
         .then((result) => {
-          if (result && result.data) {
-            setUserData(result.data);
-          } else {
-            setUserData(defaultUserData);
-          }
+          setUserData(result && result.data ? result.data : defaultUserData);
+          setFreezedUserData(result && result.data ? result.data : defaultUserData);
           setIsLoading(false);
         })
         .catch(() => {
@@ -57,6 +58,7 @@ const Form = ({ componentId }) => {
         });
     } else {
       setUserIsLoggedIn(false);
+      setIsLoading(false);
     }
   };
   const setField = (field, value) => {
@@ -73,6 +75,15 @@ const Form = ({ componentId }) => {
     }
 
     setUserData(userDataClone);
+  };
+  const checkUserFields = () => {
+    if (compareObjects(userData.firstName, freezedUserData.firstName)
+      || compareObjects(userData.lastName, freezedUserData.lastName)
+      || compareObjects(userData.age, freezedUserData.age)
+      || compareObjects(userData.gender, freezedUserData.gender)) {
+      return true;
+    }
+    return false;
   };
 
   // Attach Image Methods
@@ -123,6 +134,12 @@ const Form = ({ componentId }) => {
       }
     });
   };
+  const timeoutLoading = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  };
   const getImage = (source) => {
     const options = {
       cropping: true,
@@ -134,6 +151,7 @@ const Form = ({ componentId }) => {
     switch (source) {
       case 'camera':
         ImagePicker.openCamera(options).then((response) => {
+          timeoutLoading();
           setImage(response);
         }).catch((err) => {
           if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert('Please try again!'); }
@@ -141,6 +159,7 @@ const Form = ({ componentId }) => {
         break;
       case 'gallery':
         ImagePicker.openPicker(options).then((response) => {
+          timeoutLoading();
           setImage(response);
         }).catch((err) => {
           if (err && err.message !== 'User cancelled image selection') { dispalyErrorAlert('Please try again!'); }
@@ -157,7 +176,7 @@ const Form = ({ componentId }) => {
     Alert.alert('Error', text, [{ text: 'ok', onPress: () => { } }]);
   };
 
-  // Requests
+  // Requests and logic
   const getImageBody = () => {
     const pathV = image.path.split('/');
     return {
@@ -186,23 +205,9 @@ const Form = ({ componentId }) => {
       dispalyErrorAlert('Please attach one image');
     }
   };
-
-  const checkUserFields = () => {
-    const {
-      firstName, lastName, age, gender
-    } = userData;
-
-    if ((firstName && firstName.trim().length > 0)
-      || (lastName && lastName.trim().length > 0)
-      || (age && age.trim().length > 0)
-      || (gender && gender.trim().length > 0)) {
-      return true;
-    }
-    return false;
-  };
   const askUserToSaveDetails = (response) => {
     if (userIsLoggedIn && checkUserFields()) {
-      Alert.alert('', 'Do you want to save or update this informations?',
+      Alert.alert('', 'Do you want to update your informations ?',
         [{ text: 'Yes', onPress: () => saveUserData(response) },
           { text: 'No', onPress: () => goToResultScreen(response) }]);
     } else {
@@ -217,22 +222,27 @@ const Form = ({ componentId }) => {
       });
   };
   const goToResultScreen = (response) => {
-    setImage(null);
     Navigation.push(componentId, {
       component: {
         name: 'Result',
         passProps: {
-          response
+          response,
+          mimeFormComponentDidMount: () => mimeComponentDidMount()
         }
       }
     });
+
+    setImage(null);
+    if (scrollViewRef && scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: 0, y: 0, });
+    }
   };
 
   const contentToRender = (
     <>
       {isLoading && <Loader />}
       <View style={{ flex: 1 }}>
-        <ScrollView>
+        <ScrollView ref={scrollViewRef}>
           <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
             <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop]}>SkinLesSuggest</Text>
             <UserForm
