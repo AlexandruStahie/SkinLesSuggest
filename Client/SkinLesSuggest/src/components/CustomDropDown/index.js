@@ -3,7 +3,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import styles from './style';
 
 const CustomDropDown = ({
-  options, setField, name, value, defaultValue
+  options, setField, name, value, defaultValue, customStyle, customDropDownStyle
 }) => {
   let valueSelected = false;
   const findValueInOptions = options.filter((el) => el === value);
@@ -14,9 +14,9 @@ const CustomDropDown = ({
   const contentToRender = (
     <>
       <ModalDropdown
-        style={styles.inputView}
+        style={customStyle ? [styles.inputView, customStyle] : styles.inputView}
         textStyle={[styles.inputText, valueSelected ? styles.blackInputText : styles.greyInputText]}
-        dropdownStyle={[styles.dropdownStyle, options && options.length > 2 ? { height: 200 } : { height: 100 }]}
+        dropdownStyle={[styles.dropdownStyle, options && options.length > 2 ? { height: 200 } : { height: 100 }, customDropDownStyle && customDropDownStyle]}
         dropdownTextStyle={styles.dropdownTextStyle}
         dropdownTextHighlightStyle={styles.dropdownTextHighlightStyle}
         defaultValue={valueSelected ? value : defaultValue}

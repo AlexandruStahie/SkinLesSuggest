@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable consistent-return */
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';

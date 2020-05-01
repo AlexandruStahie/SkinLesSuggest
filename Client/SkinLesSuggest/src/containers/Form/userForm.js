@@ -1,7 +1,6 @@
 import React from 'react';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomDropDown from '../../components/CustomDropDown';
-import { localizationValues } from '../../utils/consts';
 
 const UserForm = ({
   userIsLoggedIn, userData, setField
@@ -37,13 +36,13 @@ const UserForm = ({
               options={['Male', 'Female']}
               setField={setField}
             />
-            <CustomDropDown
+            {/* <CustomDropDown
               name="localization"
               defaultValue="Localization"
               value={userData.localization}
               options={localizationValues}
               setField={setField}
-            />
+            /> */}
           </>
         ) : null
     }

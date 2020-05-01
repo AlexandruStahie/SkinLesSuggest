@@ -61,12 +61,13 @@ export default StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   okCustomButton: {
-    marginTop: 20,
+    marginTop: 23,
     marginBottom: 1,
     height: 30,
-    width: '20%',
+    width: '30%',
     justifyContent: 'center',
   },
+
 
   // BULLET LIST-VIEW
   instrBullet: {
@@ -112,6 +113,7 @@ export default StyleSheet.create({
   },
   errorMessage: {
     color: colors.red,
-    fontSize: 15
+    fontSize: 15,
+    marginTop: 10
   }
 });
