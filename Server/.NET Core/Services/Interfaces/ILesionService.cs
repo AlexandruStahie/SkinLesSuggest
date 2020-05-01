@@ -8,7 +8,8 @@ namespace SkinLesSuggest.Services.Interfaces
 {
     public interface ILesionService
     {
-        Task<List<Lesion>> GetAllUserLesions(Guid userId);
         Task SaveLesionDetails(Lesion lesion, Suggestion suggestion);
+        Task<List<Lesion>> GetAllUserLesions(Guid userId);
+        Task<List<Suggestion>> GetLesionSuggestions(Guid lesionId);
     }
 }

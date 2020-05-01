@@ -3,6 +3,7 @@ using SkinLesSuggest.Context;
 using SkinLesSuggest.Models;
 using SkinLesSuggest.Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -52,6 +53,10 @@ namespace SkinLesSuggest.Services.Implementations
             user.UserDetails = null;
             user.UserDetailsId = null;
             _dbContext.Users.Update(user);
+
+            List<Lesion> lesion = await _dbContext.Lesions.Where(x => x.UserId == user.Id).ToListAsync();
+            _dbContext.Lesions.RemoveRange(lesion);
+
             await _dbContext.SaveChangesAsync();
         }
     }

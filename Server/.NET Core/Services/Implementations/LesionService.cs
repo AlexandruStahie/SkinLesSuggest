@@ -1,4 +1,5 @@
-﻿using SkinLesSuggest.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using SkinLesSuggest.Context;
 using SkinLesSuggest.Models;
 using SkinLesSuggest.Services.Interfaces;
 using System;
@@ -26,7 +27,16 @@ namespace SkinLesSuggest.Services.Implementations
 
         public async Task<List<Lesion>> GetAllUserLesions(Guid userId)
         {
-            return new List<Lesion>();
+            return await _dbContext.Lesions
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Suggestion>> GetLesionSuggestions(Guid lesionId)
+        {
+            return await _dbContext.Suggestions
+              .Where(x => x.LesionId == lesionId)
+              .ToListAsync();
         }
     }
 }
