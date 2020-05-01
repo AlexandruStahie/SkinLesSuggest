@@ -8,16 +8,15 @@ using System.Threading.Tasks;
 
 namespace SkinLesSuggest.Context.Configurations
 {
-    public class TestDetailTypeConfig : IEntityTypeConfiguration<TestDetail>
+    public class SuggestionTypeConfig : IEntityTypeConfiguration<Suggestion>
     {
-        public void Configure(EntityTypeBuilder<TestDetail> builder)
+        public void Configure(EntityTypeBuilder<Suggestion> builder)
         {
             builder.HasKey(x => x.Id);
-            builder
-                .HasOne(x => x.Test)
-                .WithOne()
-                .HasForeignKey<TestDetail>(x => x.TestId)
-                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(x => x.Lesion)
+              .WithMany()
+              .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

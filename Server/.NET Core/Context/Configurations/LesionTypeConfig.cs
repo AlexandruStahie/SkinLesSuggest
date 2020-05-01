@@ -8,11 +8,15 @@ using System.Threading.Tasks;
 
 namespace SkinLesSuggest.Context.Configurations
 {
-    public class TestTypeConfig : IEntityTypeConfiguration<Test>
+    public class LesionTypeConfig : IEntityTypeConfiguration<Lesion>
     {
-        public void Configure(EntityTypeBuilder<Test> builder)
+        public void Configure(EntityTypeBuilder<Lesion> builder)
         {
             builder.HasKey(x => x.Id);
+
+            builder.HasOne(x => x.User)
+              .WithMany()
+              .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
