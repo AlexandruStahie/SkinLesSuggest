@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, Dimensions, ScrollView
+  View, Text, Dimensions, ScrollView, BackHandler
 } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import { Navigation } from 'react-native-navigation';
@@ -16,7 +16,7 @@ import ExtraInfo from '../../components/ExtraInfo';
 
 const initialData = [20, 20, 20, 20, 20, 20, 20];
 
-const Results = ({ response, componentId }) => {
+const Results = ({ response, mimeFormComponentDidMount, componentId }) => {
   const [data, setData] = useState(initialData);
   const [showLegend, setShowLegend] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
@@ -24,18 +24,29 @@ const Results = ({ response, componentId }) => {
 
   const goToSuggestionScreen = () => {
     Navigation.pop(componentId);
+    mimeFormComponentDidMount();
   };
 
   useEffect(() => {
-    const dataClone = Object.assign([], initialData);
+    BackHandler.addEventListener('hardwareBackPress', handleAndroidBackButton);
     if (response && response.data) {
+      const dataClone = Object.assign([], initialData);
       dataClone[response.data.prediction_class] = 100;
       setsuggestion(possibleSolutions[response.data.prediction_class]);
       setData(dataClone);
     } else {
-      setData(initialData);
+      goToSuggestionScreen();
     }
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleAndroidBackButton);
+    };
   }, []);
+
+  const handleAndroidBackButton = () => {
+    goToSuggestionScreen();
+    return true;
+  };
 
   const extraInfo = suggestion ? [
     { text: `Suggestion received : ${suggestion}`, key: 1 },
