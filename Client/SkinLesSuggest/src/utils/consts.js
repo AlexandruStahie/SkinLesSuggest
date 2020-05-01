@@ -4,7 +4,8 @@ const colors = {
   customGreen: '#128c82',
   grey: '#8f8f8f',
   red: '#FF0000',
-  customBlue: '#052F80'
+  customBlue: '#052F80',
+  darkBlue: '#0000A0'
 };
 
 const possibleSolutions = [
