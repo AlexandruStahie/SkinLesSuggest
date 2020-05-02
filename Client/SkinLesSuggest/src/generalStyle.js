@@ -23,6 +23,11 @@ export default StyleSheet.create({
     color: colors.customGreen,
     marginBottom: 40
   },
+  logoSubtitle: {
+    fontSize: 30,
+    color: colors.customGreen,
+    marginBottom: 20,
+  },
   logoMarginTop: {
     marginTop: 40
   },

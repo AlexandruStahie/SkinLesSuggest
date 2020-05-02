@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-/* eslint-disable import/prefer-default-export */
 import { setHeader, removeHeader } from './requests';
 import { storeToken, clearStore } from './localStorage';
 import { GoToMenuScreen, GoToHomeScreen } from '../../navigation';
