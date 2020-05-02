@@ -7,6 +7,7 @@ namespace SkinLesSuggest.ViewModels
 {
     public class SuggestionViewModel
     {
+        public Guid Id { get; set; }
         public string Suggestion { get; set; }
         public string Image { get; set; }
         public DateTime CreatedOn { get; set; }

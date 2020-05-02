@@ -52,12 +52,5 @@ namespace SkinLesSuggest.Controllers
 
             return Ok(user.Token);
         }
-
-        [HttpGet("testAuth")]
-        public IActionResult TestAuthAsync()
-        {
-            var userId = _httpContextAccessor.HttpContext.User.GetLoggedInUserId<string>();
-            return Ok();
-        }
     }
 }
