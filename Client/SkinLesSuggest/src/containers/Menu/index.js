@@ -16,11 +16,6 @@ const Menu = ({ componentId }) => {
     setIsLoading(false);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const testAuth = () => {
-    get('/User/testAuth');
-  };
-
   const goToScreen = (screenName) => {
     Navigation.push(componentId, {
       component: {
@@ -72,11 +67,6 @@ const Menu = ({ componentId }) => {
           text="Logout"
           onPress={logout}
         />
-
-        {/* <CustomButton
-          text="Test Auth"
-          onPress={testAuth}
-        /> */}
       </View>
     </>
   );

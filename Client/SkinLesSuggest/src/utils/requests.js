@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode';
 import { getData } from './localStorage';
 import { logOutUser } from './functions';
 
-const localTest = true;
+const localTest = false;
 const getBaseUrl = () => {
   if (localTest === true) {
     return 'https://localhost:44388/api';

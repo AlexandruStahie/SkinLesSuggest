@@ -29,5 +29,9 @@ export default StyleSheet.create({
   historyDetailsText: {
     marginLeft: '10%',
     fontSize: 15,
+  },
+  noHistoryMessage: {
+    justifyContent: 'center',
+    textAlign: 'center'
   }
 });
