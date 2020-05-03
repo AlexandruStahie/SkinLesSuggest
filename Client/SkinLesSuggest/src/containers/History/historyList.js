@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import styles from './style';
 
 const HistoryList = ({ historyList, showMoreDetails }) => (
-  <View style={{ justifyContent: 'flex-start' }}>
+  <View style={styles.historyList}>
     {
         historyList && historyList.length > 0
           ? historyList.map((element) => (

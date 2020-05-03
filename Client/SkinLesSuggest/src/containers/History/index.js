@@ -159,21 +159,17 @@ const History = () => {
   const contentToRender = (
     <>
       {isLoading && <Loader />}
-      <View style={generalStyles.containerBase}>
-        <ScrollView style={{ flex: 1 }}>
-          <View style={[generalStyles.containerBase, generalStyles.leftContainer]}>
-            <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop, { marginBottom: 0 }]}>SkinLesSuggest</Text>
-            <Text style={generalStyles.logoSubtitle}>
-              History
-            </Text>
-          </View>
+      <ScrollView style={{ backgroundColor: 'white' }}>
+        <View style={generalStyles.containerBase}>
+          <Text style={[generalStyles.logoBase, generalStyles.logoMarginTop, { marginBottom: 0 }]}>SkinLesSuggest</Text>
+          <Text style={generalStyles.logoSubtitle}>History</Text>
+        </View>
 
-          <HistoryList
-            historyList={historyList}
-            showMoreDetails={showMoreDetails}
-          />
-        </ScrollView>
-      </View>
+        <HistoryList
+          historyList={historyList}
+          showMoreDetails={showMoreDetails}
+        />
+      </ScrollView>
 
       <Modal
         onBackdropPress={() => setShowDetailsModal(false)}
