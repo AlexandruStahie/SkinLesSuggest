@@ -21,7 +21,7 @@ const HistoryDetails = ({ detailsHistory, attachImage, closeModal }) => {
           ? detailsHistory.map((element) => (
             <View key={element.id} style={styles.historyDetailsListContainer}>
               <Text style={styles.historyDetailsText}>{`Suggestion: ${element.suggestion}`}</Text>
-              <Text style={styles.historyDetailsText}>{`Suggestion date: ${moment(element.createdOn).format('d/MM/YYYY, HH:mm:ss')}`}</Text>
+              <Text style={styles.historyDetailsText}>{`Suggestion date: ${moment(element.createdOn).format('DD/MM/YYYY, HH:mm:ss')}`}</Text>
               <Image
                 source={{ uri: `data:image/jpeg;base64,${element.image}` }}
                 style={[generalStyles.image, { marginTop: 10 }]}

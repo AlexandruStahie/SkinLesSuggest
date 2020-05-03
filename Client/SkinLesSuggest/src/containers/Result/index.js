@@ -99,7 +99,7 @@ const Results = ({
     if (checkLesionData()) {
       setIsLoading(true);
       setShowErrorMessage(null);
-      post('/Lesion', { ...lesionData, createdOn: moment(new Date()).format() })
+      post('/Lesion', { ...lesionData, createdOn: moment(new Date()).format('YYYY-MM-DDTHH:mm:ss') })
         .then(() => {
           setShowSaveToHistoryModal(false);
           setHideSaveButton(true);
@@ -115,9 +115,8 @@ const Results = ({
     }
   };
   const closeSaveModal = () => {
-    setLesionData({
-      ...lesionData, name: '', localization: '',
-    });
+    setLesionData({ ...lesionData, name: '', localization: '' });
+    setShowErrorMessage('');
     setShowSaveToHistoryModal(false);
   };
 

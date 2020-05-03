@@ -2,16 +2,20 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../../utils/consts';
 
 export default StyleSheet.create({
+  historyList: {
+    marginHorizontal: '5%',
+    backgroundColor: colors.white
+  },
   historyListContainer: {
-    height: 125,
+    height: 150,
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
     borderWidth: 3,
-    marginBottom: 15
+    marginBottom: 15,
   },
   link: {
     textAlign: 'right',
-    marginTop: 20,
+    marginTop: 45,
     color: colors.darkBlue
   },
   lesionName: {
