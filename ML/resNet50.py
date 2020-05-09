@@ -65,6 +65,15 @@ data_gen = ImageDataGenerator(
 data_gen.fit(xTrain)
 
 
+print('total features length : {0}'.format(len(inputData)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTrain length : {0}'.format(len(xTrain)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xValidate length : {0}'.format(len(xValidate)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTest length : {0}'.format(len(xTest)))
+
+
 # ResNet50 model architechture
 # baseModel = ResNet50
 # model = dropout -> dense -> dropout -> dense -> out

@@ -51,6 +51,13 @@ xTrain = xTrain.reshape(xTrain.shape[0], *imageSize)
 xTest = xTest.reshape(xTest.shape[0], *imageSize)
 xValidate = xValidate.reshape(xValidate.shape[0], *imageSize)
 
+print('total features length : {0}'.format(len(features)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTrain length : {0}'.format(len(xTrain)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xValidate length : {0}'.format(len(xValidate)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTest length : {0}'.format(len(xTest)))
 
 # CNN model architechture
 # [Conv2D->relu (32)]*2 -> MaxPool2D -> Dropout]
