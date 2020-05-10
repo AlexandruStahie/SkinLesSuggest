@@ -1,13 +1,14 @@
 import utils
 import numpy as np
 
-import keras
-from keras.callbacks import ReduceLROnPlateau
-from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adam
 from keras.utils.np_utils import to_categorical
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
-from keras.models import Sequential
+from keras.preprocessing.image import ImageDataGenerator
+
+import tensorflow.keras
+from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from tensorflow.keras.models import Sequential
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -95,7 +96,7 @@ model.compile(optimizer=optimizer,
 
 # Set a learning rate reductor
 learningRateReduction = ReduceLROnPlateau(
-    monitor='val_acc', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
+    monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
 
 # With data augmentation to prevent overfitting
 datagen = ImageDataGenerator(
@@ -136,7 +137,7 @@ utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
 model.save("models/cnn/CNNModel_epochs{0}.h5".format(epochs))
-utils.PlotTrainEvolutionHistory(history)
+utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
 # Model validation predictions

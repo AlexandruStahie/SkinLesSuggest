@@ -5,19 +5,19 @@ import itertools
 # Function to plot model's loss and accuracy graphics
 
 
-def PlotTrainEvolutionHistory(trainHistory):
+def PlotTrainEvolutionHistory(trainHistory, accProp, valAccProp):
     fig, axs = plt.subplots(1, 2, figsize=(15, 5))
 
     # plot accuracy
-    axs[0].plot(range(1, len(trainHistory.history['acc'])+1),
-                trainHistory.history['acc'])
-    axs[0].plot(range(1, len(trainHistory.history['val_acc'])+1),
-                trainHistory.history['val_acc'])
+    axs[0].plot(range(1, len(trainHistory.history[accProp])+1),
+                trainHistory.history[accProp])
+    axs[0].plot(range(1, len(trainHistory.history[valAccProp])+1),
+                trainHistory.history[valAccProp])
     axs[0].set_title('Model Accuracy')
     axs[0].set_ylabel('Accuracy')
     axs[0].set_xlabel('Epoch')
     axs[0].set_xticks(np.arange(
-        1, len(trainHistory.history['acc'])+1), len(trainHistory.history['acc'])/10)
+        1, len(trainHistory.history[accProp])+1), len(trainHistory.history[accProp])/10)
     axs[0].legend(['train', 'val'], loc='best')
 
     # plot loss

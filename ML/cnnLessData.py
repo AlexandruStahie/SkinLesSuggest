@@ -2,14 +2,15 @@ import utils
 import numpy as np
 import matplotlib.pyplot as plt
 
-import keras
-from keras import regularizers
-from keras.callbacks import ReduceLROnPlateau
-from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adam
 from keras.utils.np_utils import to_categorical
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
-from keras.models import Sequential
+
+import tensorflow.keras
+from tensorflow.keras import regularizers
+from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from tensorflow.keras.models import Sequential
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -114,7 +115,7 @@ loss, accuracy, f1Score = model.evaluate(xTest, yTest, verbose=1)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
 model.save("models/cnnLessData/CNNLessDataModel_epochs{0}.h5".format(epochs))
-utils.PlotTrainEvolutionHistory(history)
+utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
 # Model validation predictions
