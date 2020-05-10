@@ -1,6 +1,7 @@
 import utils
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 import keras
 from keras import regularizers
@@ -18,22 +19,54 @@ from sklearn.metrics import confusion_matrix
 np.random.seed(123)
 inputData = utils.GetInputData((150, 112))
 
+
+# melanocyticNevi = inputData[inputData['cellTypeId'] == 4]
+# inputData = inputData.drop(
+#     inputData[inputData['cellTypeId'] == 4].iloc[:].index)
+
+
 # The dataset includes lesions with multiple images, which can be tracked by the lesion_id column
 # We group the images number under the same lesion that they belong
 inputData['num_images'] = inputData.groupby(
     'lesion_id')["image_id"].transform("count")
-# 5514 = lesions with just one image
-# 4501 = the rest that represent lesions that have multiple images per lesions
-
 
 # Split inputData in Single & Multiple images per lesion vars
 sgLesImg = inputData[inputData['num_images'] == 1]
 mltLesImg = inputData[inputData['num_images'] != 1]
 
 # Shuffle & Split Dataset
-train1, testSet = train_test_split(sgLesImg, test_size=0.20, random_state=80)
-train2, validateSet = train_test_split(train1, test_size=0.20, random_state=80)
+train1, testSet = train_test_split(sgLesImg, test_size=0.20, random_state=1234)
+
+# Remove Nevi values
+melanocyticNevi = train1[train1['cellTypeId'] == 4]
+train1 = train1.drop(
+    train1[train1['cellTypeId'] == 4].iloc[:len(train1)].index)
+
+# Split for validation and final train data
+train2, validateSet = train_test_split(
+    train1, test_size=0.20, random_state=1234)
+
+# Add 200 rows of nevi's to validateSet
+validateSet = pd.concat([validateSet, melanocyticNevi[:200]])
+
+# And the other nevi's to training
+train2 = pd.concat([train2, melanocyticNevi[201:len(melanocyticNevi)]])
 train = pd.concat([train2, mltLesImg])
+
+
+# Display new distribution of data
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+train['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
 
 # Norm images
 xTrain = utils.ResNetNormImages(list(train['image']))
@@ -50,7 +83,6 @@ imageSize = (112, 150, 3)
 xTrain = xTrain.reshape(xTrain.shape[0], *imageSize)
 xTest = xTest.reshape(xTest.shape[0], *imageSize)
 xValidate = xValidate.reshape(xValidate.shape[0], *imageSize)
-
 
 # Perform one-hot encoding on the labels
 yTrain = to_categorical(yTrain, num_classes=7)
@@ -137,7 +169,8 @@ lossVal, accuracyVal, f1ScoreVal = model.evaluate(
 utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
-model.save("models/resNet50/ResNet50Model_epochs{0}.h5".format(epochs))
+model.save(
+    "models/resNet50LessValidationNv/resNet50LessValidationNvModel_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history)
 
 
