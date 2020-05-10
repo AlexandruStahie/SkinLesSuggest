@@ -140,14 +140,14 @@ model.save("models/cnn/CNNModel_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
-# Model validation predictions
-yPred = model.predict(xValidate)
-# Transform validation predictions classes to one hot vectors
+# Model test predictions
+yPred = model.predict(xTest)
+# Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
-# Transform validation target to one hot vectors
-yTrue = np.argmax(yValidate, axis=1)
+# Transform test target to one hot vectors
+yTrue = np.argmax(yTest, axis=1))
 # Create confusion matrix
-confusionMatrix = confusion_matrix(yTrue, yPredClasses)
+confusionMatrix=confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
 utils.PlotConfusionMatrix(confusionMatrix)
 

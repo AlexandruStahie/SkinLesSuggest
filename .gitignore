@@ -4,6 +4,7 @@
 /ML/models/resNet50/ResNet50Model_epochs30.h5
 /ML/models/resNet50LessData
 /ML/models/resNet50LessValidationNv
+/ML/models/resNet152LessData
 
 #Server ignored files
 /Server/SkinLesSuggest/appsettings.Development.json
