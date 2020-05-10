@@ -22,7 +22,7 @@ inputData = utils.GetInputData((32, 32))
 
 # Remove 5000 Melanocytic nevi images
 inputData = inputData.drop(
-    inputData[inputData['cellTypeId'] == 4].iloc[:5000].index)
+    inputData[inputData['cellTypeId'] == 4].iloc[:3500].index)
 
 # Display new distribution of data
 fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
@@ -118,11 +118,11 @@ model.save("models/cnnLessData/CNNLessDataModel_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
-# Model validation predictions
+# Model test predictions
 yPred = model.predict(xTest)
-# Transform validation predictions classes to one hot vectors
+# Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
-# Transform validation target to one hot vectors
+# Transform test target to one hot vectors
 yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
 confusionMatrix = confusion_matrix(yTrue, yPredClasses)
