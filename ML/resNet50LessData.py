@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 import keras
 from keras import regularizers
 from keras.utils.np_utils import to_categorical
-from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-from tensorflow.python.keras.optimizers import Adam
-from tensorflow.python.keras.layers import Dense, Dropout
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.applications import ResNet50
 from keras.preprocessing.image import ImageDataGenerator
+
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.applications import ResNet50
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -141,7 +142,7 @@ cb_early_stopper = EarlyStopping(monitor='val_loss', patience=4)
 
 # Set a learning rate reductor
 learningRateReduction = ReduceLROnPlateau(
-    monitor='val_acc', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
+    monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
 
 
 # Fit the model (30 epochs with batch size as 10)
@@ -169,7 +170,7 @@ utils.PrintTestStats(accuracy, loss, f1Score)
 
 model.save(
     "models/resNet50LessData/resNet50LessDataModel_epochs{0}.h5".format(epochs))
-utils.PlotTrainEvolutionHistory(history)
+utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
 # Model validation predictions
