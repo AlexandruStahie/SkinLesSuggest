@@ -23,7 +23,7 @@ target = inputData['cellTypeId']
 
 
 xTrainSplit, xTestSplit, yTrainSplit, yTestSplit = train_test_split(
-    features, target, test_size=0.20, random_state=1234)
+    features, target, test_size=0.10, random_state=123)
 
 xTrain = np.asarray(xTrainSplit['image'].tolist())
 xTest = np.asarray(xTestSplit['image'].tolist())
@@ -44,7 +44,7 @@ yTest = to_categorical(yTestSplit, num_classes=7)
 
 
 xTrain, xValidate, yTrain, yValidate = train_test_split(
-    xTrain, yTrain, test_size=0.1, random_state=2)
+    xTrain, yTrain, test_size=0.20, random_state=123)
 
 # Reshape image in 3 dimensions (height = 75px, width = 100px, canal = 3 RGB)
 imageSize = (75, 100, 3)
@@ -117,11 +117,10 @@ datagen.fit(xTrain)
 # Fit the model (50 epochs with batch size as 10)
 epochs = 50
 batchSize = 10
-history = model.fit_generator(datagen.flow(xTrain, yTrain, batch_size=batchSize),
-                              epochs=epochs, validation_data=(
-                                  xValidate, yValidate),
-                              verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
-                              callbacks=[learningRateReduction])
+history = model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
+                    epochs=epochs, validation_data=(xValidate, yValidate),
+                    verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
+                    callbacks=[learningRateReduction])
 
 
 print('Model metrics name: {0}'.format(model.metrics_names))
@@ -145,9 +144,9 @@ yPred = model.predict(xTest)
 # Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
 # Transform test target to one hot vectors
-yTrue = np.argmax(yTest, axis=1))
+yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
-confusionMatrix=confusion_matrix(yTrue, yPredClasses)
+confusionMatrix = confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
 utils.PlotConfusionMatrix(confusionMatrix)
 

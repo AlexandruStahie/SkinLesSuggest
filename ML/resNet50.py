@@ -83,6 +83,9 @@ numClasses = 7
 model = Sequential()
 baseModel = ResNet50(include_top=False, weights='imagenet',
                      input_shape=imageSize, pooling='avg')
+
+baseModel.summary()
+
 model.add(baseModel)
 model.add(Dropout(0.5))
 model.add(Dense(128, activation="relu", kernel_regularizer=regularizers.l2(0.02)))
@@ -118,11 +121,11 @@ learningRateReduction = ReduceLROnPlateau(
 # Fit the model (30 epochs with batch size as 10)
 epochs = 30
 batchSze = 10
-history = model.fit_generator(data_gen.flow(xTrain, yTrain, batch_size=batchSze),
-                              epochs=epochs, validation_data=(
-                                  xValidate, yValidate),
-                              verbose=1, steps_per_epoch=xTrain.shape[0] // batchSze,
-                              callbacks=[learningRateReduction])
+history = model.fit(data_gen.flow(xTrain, yTrain, batch_size=batchSze),
+                    epochs=epochs, validation_data=(
+    xValidate, yValidate),
+    verbose=1, steps_per_epoch=xTrain.shape[0] // batchSze,
+    callbacks=[learningRateReduction])
 #   callbacks=[cb_early_stopper])
 
 
@@ -142,12 +145,12 @@ model.save("models/resNet50/ResNet50Model_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
-# Model validation predictions
-yPred = model.predict(xValidate)
-# Transform validation predictions classes to one hot vectors
+# Model test predictions
+yPred = model.predict(xTest)
+# Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
-# Transform validation target to one hot vectors
-yTrue = np.argmax(yValidate, axis=1)
+# Transform test target to one hot vectors
+yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
 confusionMatrix = confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
