@@ -53,18 +53,18 @@ train2 = pd.concat([train2, melanocyticNevi[151:len(melanocyticNevi)]])
 train = pd.concat([train2, mltLesImg])
 
 
-# Display new distribution of data
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-train['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# # Display new distribution of data
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# train['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
 
 # Norm images
@@ -119,14 +119,6 @@ model.add(Dense(128, activation="relu", kernel_regularizer=regularizers.l2(0.02)
 model.add(Dropout(0.5))
 model.add(Dense(numClasses, activation='softmax',
                 kernel_regularizer=regularizers.l2(0.02)))
-
-# for layer in baseModel.layers:
-#     # freeze the weights of a particular layer
-#     layer.trainable = False
-
-# for layer in baseModel.layers[-22:]:
-#     layer.trainable = True
-
 model.summary()
 
 
@@ -148,8 +140,8 @@ learningRateReduction = ReduceLROnPlateau(
 # Fit the model (30 epochs with batch size as 10)
 epochs = 30
 batchSze = 10
-history = model.fit_generator(data_gen.flow(xTrain, yTrain, batch_size=batchSze),
-                              epochs=epochs, validation_data=(
+history = model.fit(data_gen.flow(xTrain, yTrain, batch_size=batchSze),
+                    epochs=epochs, validation_data=(
     xValidate, yValidate),
     verbose=1, steps_per_epoch=xTrain.shape[0] // batchSze,
     callbacks=[learningRateReduction])
@@ -173,12 +165,12 @@ model.save(
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
-# Model validation predictions
-yPred = model.predict(xValidate)
-# Transform validation predictions classes to one hot vectors
+# Model test predictions
+yPred = model.predict(xTest)
+# Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
-# Transform validation target to one hot vectors
-yTrue = np.argmax(yValidate, axis=1)
+# Transform test target to one hot vectors
+yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
 confusionMatrix = confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
