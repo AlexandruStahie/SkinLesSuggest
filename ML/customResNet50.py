@@ -45,7 +45,7 @@ train2, testSet = train_test_split(
 # Add custom nv number to sets
 testSet = pd.concat([testSet, melanocyticNevi[:300]])
 validateSet = pd.concat([validateSet, melanocyticNevi[301:1200]])
-train2 = pd.concat([train2, melanocyticNevi[1201:len(melanocyticNevi)]])
+train2 = pd.concat([train2, melanocyticNevi[1201:len(melanocyticNevi) - 500]])
 train = pd.concat([train2, mltLesImg])
 
 
@@ -129,10 +129,10 @@ for layer in baseModel.layers[-22:]:
 model.summary()
 
 
-optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
-                 epsilon=None, decay=1e-6, amsgrad=False)
+# optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
+#                  epsilon=None, decay=1e-6, amsgrad=False)
 
-# optimizer = SGD(learning_rate=0.001)
+optimizer = SGD(learning_rate=0.001)
 
 model.compile(optimizer=optimizer,
               loss="categorical_crossentropy",

@@ -39,17 +39,17 @@ train2, validateSet = train_test_split(train1, test_size=0.20, random_state=80)
 train = pd.concat([train2, mltLesImg])
 
 # Display new distribution of data
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-train['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# train['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
 
 # Norm images
@@ -98,43 +98,48 @@ numClasses = 7
 model = Sequential()
 baseModel = resnet.ResNet152(include_top=False, weights='imagenet',
                              input_shape=imageSize, pooling='max')
+
+for layer in baseModel.layers:
+    # freeze the weights of a particular layer
+    layer.trainable = False
+
+# defreeze just the last 25 layers
+for layer in baseModel.layers[-50:]:
+    layer.trainable = True
+
+# print freezed status for each layers
+for l in baseModel.layers:
+    print(l.name, l.trainable)
+
 model.add(baseModel)
 model.add(Dropout(0.5))
 model.add(Dense(128, activation="relu", kernel_regularizer=regularizers.l2(0.02)))
 model.add(Dropout(0.5))
 model.add(Dense(numClasses, activation='softmax',
                 kernel_regularizer=regularizers.l2(0.02)))
-
-for layer in baseModel.layers:
-    # freeze the weights of a particular layer
-    layer.trainable = False
-
-for layer in baseModel.layers[-22:]:
-    layer.trainable = True
-
 model.summary()
-
 
 optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
                  epsilon=None, decay=1e-6, amsgrad=False)
 
-model.compile(  # optimizer=optimizer,
-    loss="categorical_crossentropy",
-    metrics=['accuracy', utils.CalculateF1Score])
+model.compile(optimizer=optimizer,
+              loss="categorical_crossentropy",
+              metrics=['accuracy', utils.CalculateF1Score])
 
 
-cb_early_stopper = EarlyStopping(monitor='val_loss', patience=4)
+cb_early_stopper = EarlyStopping(
+    monitor='val_loss', mode='min', patience=10)
 
 # Set a learning rate reductor
 learningRateReduction = ReduceLROnPlateau(
     monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
 
 
-# Fit the model (30 epochs with batch size as 10)
-epochs = 1
-batchSze = 15
-history = model.fit_generator(data_gen.flow(xTrain, yTrain, batch_size=batchSze),
-                              epochs=epochs, validation_data=(
+# Fit the model (50 epochs with batch size as 10)
+epochs = 50
+batchSze = 10
+history = model.fit(data_gen.flow(xTrain, yTrain, batch_size=batchSze),
+                    epochs=epochs, validation_data=(
     xValidate, yValidate),
     verbose=1, steps_per_epoch=xTrain.shape[0] // batchSze,
     callbacks=[cb_early_stopper, learningRateReduction])
@@ -157,12 +162,12 @@ model.save(
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
-# Model validation predictions
-yPred = model.predict(xValidate)
-# Transform validation predictions classes to one hot vectors
+# Model test predictions
+yPred = model.predict(xTest)
+# Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
-# Transform validation target to one hot vectors
-yTrue = np.argmax(yValidate, axis=1)
+# Transform test target to one hot vectors
+yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
 confusionMatrix = confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
