@@ -1,5 +1,6 @@
 import utils
 import numpy as np
+import matplotlib.pyplot as plt
 
 from keras.utils.np_utils import to_categorical
 from keras.preprocessing.image import ImageDataGenerator
@@ -23,10 +24,29 @@ target = inputData['cellTypeId']
 
 
 xTrainSplit, xTestSplit, yTrainSplit, yTestSplit = train_test_split(
-    features, target, test_size=0.10, random_state=123)
+    features, target, test_size=0.05, random_state=123)
 
-xTrain = np.asarray(xTrainSplit['image'].tolist())
+xTrain, xValidate, yTrain, yValidate = train_test_split(
+    xTrainSplit, yTrainSplit, test_size=0.30, random_state=123)
+
+
+# Display new distribution of data
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+xTrain['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+xTestSplit['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+xValidate['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+
+xTrain = np.asarray(xTrain['image'].tolist())
 xTest = np.asarray(xTestSplit['image'].tolist())
+xValidate = np.asarray(xValidate['image'].tolist())
 
 xTrainMean = np.mean(xTrain)
 xTrainStd = np.std(xTrain)
@@ -34,17 +54,19 @@ xTrainStd = np.std(xTrain)
 xTestMean = np.mean(xTest)
 xTestStd = np.std(xTest)
 
+xValMean = np.mean(xValidate)
+xValStd = np.std(xValidate)
+
 xTrain = (xTrain - xTrainMean)/xTrainStd
 xTest = (xTest - xTestMean)/xTestStd
+xValidate = (xValidate - xValMean)/xValStd
 
 
 # Perform one-hot encoding on the labels
-yTrain = to_categorical(yTrainSplit, num_classes=7)
+yTrain = to_categorical(yTrain, num_classes=7)
 yTest = to_categorical(yTestSplit, num_classes=7)
+yValidate = to_categorical(yValidate, num_classes=7)
 
-
-xTrain, xValidate, yTrain, yValidate = train_test_split(
-    xTrain, yTrain, test_size=0.20, random_state=123)
 
 # Reshape image in 3 dimensions (height = 75px, width = 100px, canal = 3 RGB)
 imageSize = (75, 100, 3)
