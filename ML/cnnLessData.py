@@ -22,7 +22,7 @@ inputData = utils.GetInputData((32, 32))
 
 # Remove 3000 Melanocytic nevi images
 inputData = inputData.drop(
-    inputData[inputData['cellTypeId'] == 4].iloc[:3000].index)
+    inputData[inputData['cellTypeId'] == 4].iloc[:3500].index)
 
 # Display new distribution of data
 fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
