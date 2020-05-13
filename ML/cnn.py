@@ -17,6 +17,25 @@ from sklearn.metrics import confusion_matrix
 np.random.seed(123)
 inputData = utils.GetInputData((100, 75))
 
+
+akiec = inputData[inputData['cellTypeId'] == 0]
+bcc = inputData[inputData['cellTypeId'] == 1]
+bkl = inputData[inputData['cellTypeId'] == 2]
+df = inputData[inputData['cellTypeId'] == 3]
+nv = inputData[inputData['cellTypeId'] == 4]
+mel = inputData[inputData['cellTypeId'] == 5]
+vasc = inputData[inputData['cellTypeId'] == 6]
+
+
+print('akiec: {0}'.format(len(akiec)))
+print('bcc: {0}'.format(len(bcc)))
+print('bkl: {0}'.format(len(bkl)))
+print('df: {0}'.format(len(df)))
+print('nv: {0}'.format(len(nv)))
+print('mel: {0}'.format(len(mel)))
+print('vasc: {0}'.format(len(vasc)))
+
+
 # What we know
 features = inputData.drop(columns=['cellTypeId'], axis=1)
 # What we want to predict
