@@ -1,19 +1,40 @@
 import utils
 import numpy as np
+import matplotlib.pyplot as plt
 
-import keras
-from keras.callbacks import ReduceLROnPlateau
-from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adam
 from keras.utils.np_utils import to_categorical
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
-from keras.models import Sequential
+from keras.preprocessing.image import ImageDataGenerator
+
+import tensorflow.keras
+from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from tensorflow.keras.models import Sequential
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
 np.random.seed(123)
 inputData = utils.GetInputData((100, 75))
+
+
+akiec = inputData[inputData['cellTypeId'] == 0]
+bcc = inputData[inputData['cellTypeId'] == 1]
+bkl = inputData[inputData['cellTypeId'] == 2]
+df = inputData[inputData['cellTypeId'] == 3]
+nv = inputData[inputData['cellTypeId'] == 4]
+mel = inputData[inputData['cellTypeId'] == 5]
+vasc = inputData[inputData['cellTypeId'] == 6]
+
+
+print('akiec: {0}'.format(len(akiec)))
+print('bcc: {0}'.format(len(bcc)))
+print('bkl: {0}'.format(len(bkl)))
+print('df: {0}'.format(len(df)))
+print('nv: {0}'.format(len(nv)))
+print('mel: {0}'.format(len(mel)))
+print('vasc: {0}'.format(len(vasc)))
+
 
 # What we know
 features = inputData.drop(columns=['cellTypeId'], axis=1)
@@ -22,10 +43,29 @@ target = inputData['cellTypeId']
 
 
 xTrainSplit, xTestSplit, yTrainSplit, yTestSplit = train_test_split(
-    features, target, test_size=0.20, random_state=1234)
+    features, target, test_size=0.05, random_state=123)
 
-xTrain = np.asarray(xTrainSplit['image'].tolist())
+xTrain, xValidate, yTrain, yValidate = train_test_split(
+    xTrainSplit, yTrainSplit, test_size=0.30, random_state=123)
+
+
+# Display new distribution of data
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+xTrain['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+xTestSplit['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+xValidate['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+
+xTrain = np.asarray(xTrain['image'].tolist())
 xTest = np.asarray(xTestSplit['image'].tolist())
+xValidate = np.asarray(xValidate['image'].tolist())
 
 xTrainMean = np.mean(xTrain)
 xTrainStd = np.std(xTrain)
@@ -33,17 +73,19 @@ xTrainStd = np.std(xTrain)
 xTestMean = np.mean(xTest)
 xTestStd = np.std(xTest)
 
+xValMean = np.mean(xValidate)
+xValStd = np.std(xValidate)
+
 xTrain = (xTrain - xTrainMean)/xTrainStd
 xTest = (xTest - xTestMean)/xTestStd
+xValidate = (xValidate - xValMean)/xValStd
 
 
 # Perform one-hot encoding on the labels
-yTrain = to_categorical(yTrainSplit, num_classes=7)
+yTrain = to_categorical(yTrain, num_classes=7)
 yTest = to_categorical(yTestSplit, num_classes=7)
+yValidate = to_categorical(yValidate, num_classes=7)
 
-
-xTrain, xValidate, yTrain, yValidate = train_test_split(
-    xTrain, yTrain, test_size=0.1, random_state=2)
 
 # Reshape image in 3 dimensions (height = 75px, width = 100px, canal = 3 RGB)
 imageSize = (75, 100, 3)
@@ -51,6 +93,13 @@ xTrain = xTrain.reshape(xTrain.shape[0], *imageSize)
 xTest = xTest.reshape(xTest.shape[0], *imageSize)
 xValidate = xValidate.reshape(xValidate.shape[0], *imageSize)
 
+print('total features length : {0}'.format(len(features)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTrain length : {0}'.format(len(xTrain)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xValidate length : {0}'.format(len(xValidate)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTest length : {0}'.format(len(xTest)))
 
 # CNN model architechture
 # [Conv2D->relu (32)]*2 -> MaxPool2D -> Dropout]
@@ -88,7 +137,7 @@ model.compile(optimizer=optimizer,
 
 # Set a learning rate reductor
 learningRateReduction = ReduceLROnPlateau(
-    monitor='val_acc', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
+    monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
 
 # With data augmentation to prevent overfitting
 datagen = ImageDataGenerator(
@@ -109,11 +158,10 @@ datagen.fit(xTrain)
 # Fit the model (50 epochs with batch size as 10)
 epochs = 50
 batchSize = 10
-history = model.fit_generator(datagen.flow(xTrain, yTrain, batch_size=batchSize),
-                              epochs=epochs, validation_data=(
-                                  xValidate, yValidate),
-                              verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
-                              callbacks=[learningRateReduction])
+history = model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
+                    epochs=epochs, validation_data=(xValidate, yValidate),
+                    verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
+                    callbacks=[learningRateReduction])
 
 
 print('Model metrics name: {0}'.format(model.metrics_names))
@@ -129,15 +177,15 @@ utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
 model.save("models/cnn/CNNModel_epochs{0}.h5".format(epochs))
-utils.PlotTrainEvolutionHistory(history)
+utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
-# Model validation predictions
-yPred = model.predict(xValidate)
-# Transform validation predictions classes to one hot vectors
+# Model test predictions
+yPred = model.predict(xTest)
+# Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
-# Transform validation target to one hot vectors
-yTrue = np.argmax(yValidate, axis=1)
+# Transform test target to one hot vectors
+yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
 confusionMatrix = confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
