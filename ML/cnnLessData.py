@@ -2,14 +2,15 @@ import utils
 import numpy as np
 import matplotlib.pyplot as plt
 
-import keras
-from keras import regularizers
-from keras.callbacks import ReduceLROnPlateau
-from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adam
 from keras.utils.np_utils import to_categorical
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
-from keras.models import Sequential
+
+import tensorflow.keras
+from tensorflow.keras import regularizers
+from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from tensorflow.keras.models import Sequential
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -19,7 +20,7 @@ inputData = utils.GetInputData((32, 32))
 
 # utils.PrintClassesInfo(inputData)
 
-# Remove 5000 Melanocytic nevi images
+# Remove 3000 Melanocytic nevi images
 inputData = inputData.drop(
     inputData[inputData['cellTypeId'] == 4].iloc[:5000].index)
 
@@ -64,6 +65,11 @@ imageSize = (32, 32, 3)
 xTrain = xTrain.reshape(xTrain.shape[0], *imageSize)
 xTest = xTest.reshape(xTest.shape[0], *imageSize)
 
+print('total features length : {0}'.format(len(features)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTrain length : {0}'.format(len(xTrain)))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print('xTest length : {0}'.format(len(xTest)))
 
 # CNN model architechture
 # [Conv2D->relu(32) -> Conv2D->relu(64) -> MaxPool2D -> Dropout]
@@ -109,14 +115,14 @@ loss, accuracy, f1Score = model.evaluate(xTest, yTest, verbose=1)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
 model.save("models/cnnLessData/CNNLessDataModel_epochs{0}.h5".format(epochs))
-utils.PlotTrainEvolutionHistory(history)
+utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
-# Model validation predictions
+# Model test predictions
 yPred = model.predict(xTest)
-# Transform validation predictions classes to one hot vectors
+# Transform test predictions classes to one hot vectors
 yPredClasses = np.argmax(yPred, axis=1)
-# Transform validation target to one hot vectors
+# Transform test target to one hot vectors
 yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
 confusionMatrix = confusion_matrix(yTrue, yPredClasses)

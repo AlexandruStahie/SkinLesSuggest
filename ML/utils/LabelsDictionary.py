@@ -7,5 +7,6 @@ labelDictionary = {
     'df': 'Dermatofibroma',  # 3
     'nv': 'Melanocytic nevi',  # 4
     'mel': 'Melanoma',  # 5
-    'vasc': 'Vascular lesions'  # 6
+    'vasc': 'Vascular lesions',  # 6
+    'scc': "Squamous Cell Carcinoma"  # 7
 }
