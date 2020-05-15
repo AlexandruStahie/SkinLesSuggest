@@ -155,7 +155,7 @@ datagen = ImageDataGenerator(
 datagen.fit(xTrain)
 
 
-# Fit the model (50 epochs with batch size as 10)
+# Fit the model
 epochs = 50
 batchSize = 10
 history = model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),

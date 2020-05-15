@@ -9,8 +9,8 @@ from .LabelsDictionary import labelDictionary
 
 # Read Images and Data related to it
 def GetInputData(resizeDims):
-    # inputDirectory = os.path.join('input')
-    inputDirectory = os.path.join('newInput')
+    inputDirectory = os.path.join('input')
+    # inputDirectory = os.path.join('newInput')
 
     # Get images from both folders HAM10000_images_part1 and HAM10000_images_part2
     imagesPath = {os.path.splitext(os.path.basename(x))[0]: x
