@@ -19,6 +19,7 @@ from sklearn.metrics import confusion_matrix
 
 np.random.seed(123)
 
+
 inputData = utils.GetInputData((150, 112))
 
 inputData['num_images'] = inputData.groupby(
