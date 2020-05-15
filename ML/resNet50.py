@@ -166,7 +166,7 @@ lossVal, accuracyVal, f1ScoreVal = model.evaluate(
 utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
-# model.save("models/resNet50/ResNet50Model_epochs{0}.h5".format(epochs))
+model.save("models/resNet50/ResNet50Model_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 

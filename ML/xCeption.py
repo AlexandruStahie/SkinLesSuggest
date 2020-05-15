@@ -12,7 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.applications import resnet
+from tensorflow.keras.applications import Xception
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -44,8 +44,8 @@ train2, testSet = train_test_split(
 
 # Add custom nv number to sets
 testSet = pd.concat([testSet, melanocyticNevi[:300]])
-validateSet = pd.concat([validateSet, melanocyticNevi[301:1200]])
-train2 = pd.concat([train2, melanocyticNevi[1201:len(melanocyticNevi) - 500]])
+validateSet = pd.concat([validateSet, melanocyticNevi[301:1000]])
+train2 = pd.concat([train2, melanocyticNevi[1001:len(melanocyticNevi) - 1000]])
 train = pd.concat([train2, mltLesImg])
 
 
@@ -103,14 +103,14 @@ print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('xTest length : {0}'.format(len(xTest)))
 
 
-# ResNet152 model architechture
-# baseModel = ResNet152
+# ResNet50 model architechture
+# baseModel = ResNet50
 # model = dropout -> dense -> dropout -> dense -> out
 numClasses = 7
 
 model = Sequential()
-baseModel = resnet.ResNet152(include_top=False, weights='imagenet',
-                             input_shape=imageSize, pooling='avg')
+baseModel = Xception(include_top=False, weights='imagenet',
+                     input_shape=imageSize, pooling='avg')
 baseModel.summary()
 model.add(baseModel)
 
@@ -120,19 +120,20 @@ model.add(Dropout(0.5))
 model.add(Dense(numClasses, activation='softmax',
                 kernel_regularizer=regularizers.l2(0.02)))
 
+
 for layer in baseModel.layers:
     layer.trainable = False
 
-for layer in baseModel.layers[-22:]:
+for layer in baseModel.layers[-13:]:
     layer.trainable = True
 
 model.summary()
 
 
-# optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
+# optimizer = Adam(lr=0.01, beta_1=0.9, beta_2=0.999,
 #                  epsilon=None, decay=1e-6, amsgrad=False)
 
-optimizer = SGD(learning_rate=0.001)
+optimizer = SGD(learning_rate=0.01)
 
 model.compile(optimizer=optimizer,
               loss="categorical_crossentropy",
@@ -146,8 +147,8 @@ learningRateReduction = ReduceLROnPlateau(
     monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
 
 # Fit the model
-epochs = 30
-batchSize = 10
+epochs = 20
+batchSize = 15
 
 history = model.fit(train_datagen.flow(xTrain, yTrain, batch_size=batchSize),
                     epochs=epochs, validation_data=(xValidate, yValidate),
@@ -166,7 +167,7 @@ lossVal, accuracyVal, f1ScoreVal = model.evaluate(
 utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
-model.save("models/resNet152/ResNet152Model_epochs{0}.h5".format(epochs))
+# model.save("models/resNet50/ResNet50Model_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
