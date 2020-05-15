@@ -1,5 +1,6 @@
 #ML ignored files
 /ML/input
+/ML/newInput
 /ML/utils/__pycache__
 /ML/models/resNet50
 /ML/models/resNet50LessData
