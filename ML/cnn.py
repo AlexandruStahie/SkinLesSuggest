@@ -141,24 +141,17 @@ learningRateReduction = ReduceLROnPlateau(
 
 # With data augmentation to prevent overfitting
 datagen = ImageDataGenerator(
-    featurewise_center=False,
-    samplewise_center=False,
-    featurewise_std_normalization=False,
-    samplewise_std_normalization=False,
-    zca_whitening=False,
     rotation_range=10,
     zoom_range=0.1,
     width_shift_range=0.1,
     height_shift_range=0.1,
-    horizontal_flip=False,
-    vertical_flip=False)
 datagen.fit(xTrain)
 
 
 # Fit the model
-epochs = 50
-batchSize = 10
-history = model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
+epochs=50
+batchSize=10
+history=model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
                     epochs=epochs, validation_data=(xValidate, yValidate),
                     verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
                     callbacks=[learningRateReduction])
@@ -166,10 +159,10 @@ history = model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
 
 print('Model metrics name: {0}'.format(model.metrics_names))
 
-loss, accuracy, f1Score = model.evaluate(
+loss, accuracy, f1Score=model.evaluate(
     xTest, yTest, verbose=1)
 
-lossVal, accuracyVal, f1ScoreVal = model.evaluate(
+lossVal, accuracyVal, f1ScoreVal=model.evaluate(
     xValidate, yValidate, verbose=1)
 
 
@@ -181,13 +174,13 @@ utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
 # Model test predictions
-yPred = model.predict(xTest)
+yPred=model.predict(xTest)
 # Transform test predictions classes to one hot vectors
-yPredClasses = np.argmax(yPred, axis=1)
+yPredClasses=np.argmax(yPred, axis=1)
 # Transform test target to one hot vectors
-yTrue = np.argmax(yTest, axis=1)
+yTrue=np.argmax(yTest, axis=1)
 # Create confusion matrix
-confusionMatrix = confusion_matrix(yTrue, yPredClasses)
+confusionMatrix=confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
 utils.PlotConfusionMatrix(confusionMatrix)
 
