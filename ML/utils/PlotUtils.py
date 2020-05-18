@@ -6,31 +6,45 @@ import itertools
 
 
 def PlotTrainEvolutionHistory(trainHistory, accProp, valAccProp):
-    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+    f1Score = 'CalculateF1Score'
+    valF1Score = 'val_CalculateF1Score'
 
-    # plot accuracy
-    axs[0].plot(range(1, len(trainHistory.history[accProp])+1),
-                trainHistory.history[accProp])
-    axs[0].plot(range(1, len(trainHistory.history[valAccProp])+1),
-                trainHistory.history[valAccProp])
-    axs[0].set_title('Model Accuracy')
-    axs[0].set_ylabel('Accuracy')
+    # plot f1 score
+    axs[0].plot(range(1, len(trainHistory.history[f1Score])+1),
+                trainHistory.history[f1Score])
+    axs[0].plot(range(1, len(trainHistory.history[valF1Score])+1),
+                trainHistory.history[valF1Score])
+    axs[0].set_title('Model F1 Score')
+    axs[0].set_ylabel('F1 Score')
     axs[0].set_xlabel('Epoch')
     axs[0].set_xticks(np.arange(
-        1, len(trainHistory.history[accProp])+1), len(trainHistory.history[accProp])/10)
+        1, len(trainHistory.history[f1Score])+1), len(trainHistory.history[f1Score])/10)
     axs[0].legend(['train', 'val'], loc='best')
 
-    # plot loss
-    axs[1].plot(range(1, len(trainHistory.history['loss'])+1),
-                trainHistory.history['loss'])
-    axs[1].plot(range(1, len(trainHistory.history['val_loss'])+1),
-                trainHistory.history['val_loss'])
-    axs[1].set_title('Model Loss')
-    axs[1].set_ylabel('Loss')
+    # plot accuracy
+    axs[1].plot(range(1, len(trainHistory.history[accProp])+1),
+                trainHistory.history[accProp])
+    axs[1].plot(range(1, len(trainHistory.history[valAccProp])+1),
+                trainHistory.history[valAccProp])
+    axs[1].set_title('Model Accuracy')
+    axs[1].set_ylabel('Accuracy')
     axs[1].set_xlabel('Epoch')
     axs[1].set_xticks(np.arange(
-        1, len(trainHistory.history['loss'])+1), len(trainHistory.history['loss'])/10)
+        1, len(trainHistory.history[accProp])+1), len(trainHistory.history[accProp])/10)
     axs[1].legend(['train', 'val'], loc='best')
+
+    # plot loss
+    axs[2].plot(range(1, len(trainHistory.history['loss'])+1),
+                trainHistory.history['loss'])
+    axs[2].plot(range(1, len(trainHistory.history['val_loss'])+1),
+                trainHistory.history['val_loss'])
+    axs[2].set_title('Model Loss')
+    axs[2].set_ylabel('Loss')
+    axs[2].set_xlabel('Epoch')
+    axs[2].set_xticks(np.arange(
+        1, len(trainHistory.history['loss'])+1), len(trainHistory.history['loss'])/10)
+    axs[2].legend(['train', 'val'], loc='best')
     plt.show()
 
 

@@ -12,21 +12,21 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.applications import resnet
+from tensorflow.keras.applications import InceptionV3
+from tensorflow.keras.utils import plot_model
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
 np.random.seed(123)
-inputData = utils.GetInputData((150, 112))
 
+inputData = utils.GetInputData((185, 150))
 inputData['num_images'] = inputData.groupby(
     'lesion_id')["image_id"].transform("count")
 
 # Split inputData in Single & Multiple images per lesion vars
 sgLesImg = inputData[inputData['num_images'] == 1]
 mltLesImg = inputData[inputData['num_images'] != 1]
-
 
 # Remove Nevi values from sgLesImgs
 melanocyticNevi = sgLesImg[sgLesImg['cellTypeId'] == 4]
@@ -43,24 +43,24 @@ train2, testSet = train_test_split(
 
 
 # Add custom nv number to sets
-testSet = pd.concat([testSet, melanocyticNevi[:300]])
-validateSet = pd.concat([validateSet, melanocyticNevi[301:1200]])
-train2 = pd.concat([train2, melanocyticNevi[1201:len(melanocyticNevi) - 500]])
+testSet = pd.concat([testSet, melanocyticNevi[:150]])
+validateSet = pd.concat([validateSet, melanocyticNevi[151:1000]])
+train2 = pd.concat([train2, melanocyticNevi[1001:len(melanocyticNevi) - 1000]])
 train = pd.concat([train2, mltLesImg])
 
 
 # Display new distribution of data
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-train['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# train['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
 
 # Norm images
@@ -74,7 +74,7 @@ yTest = np.asarray(testSet['cellTypeId'])
 yValidate = np.asarray(validateSet['cellTypeId'])
 
 # Resize images
-imageSize = (112, 150, 3)
+imageSize = (185, 150, 3)
 xTrain = xTrain.reshape(xTrain.shape[0], *imageSize)
 xTest = xTest.reshape(xTest.shape[0], *imageSize)
 xValidate = xValidate.reshape(xValidate.shape[0], *imageSize)
@@ -88,10 +88,13 @@ yValidate = to_categorical(yValidate, num_classes=7)
 
 # train generator
 train_datagen = ImageDataGenerator(
-    rotation_range=90,
-    zoom_range=0.1,
-    width_shift_range=0.1,
-    height_shift_range=0.1)
+    rotation_range=30,
+    zoom_range=0.15,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.15,
+    horizontal_flip=True,
+    fill_mode="nearest")
 train_datagen.fit(xTrain)
 
 print('total features length : {0}'.format(len(inputData)))
@@ -103,47 +106,47 @@ print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('xTest length : {0}'.format(len(xTest)))
 
 
-# ResNet152 model architechture
-# baseModel = ResNet152
+# ResNet50 model architechture
+# baseModel = ResNet50
 # model = dropout -> dense -> dropout -> dense -> out
 numClasses = 7
 
 model = Sequential()
-baseModel = resnet.ResNet152(include_top=False, weights='imagenet',
-                             input_shape=imageSize, pooling='avg')
+baseModel = InceptionV3(include_top=False,  # weights='imagenet',
+                        input_shape=imageSize, pooling='avg')
+# plot_model(baseModel, to_file='model_combined.png')
+
+# for layer in baseModel.layers:
+#     layer.trainable = False
+
+# for layer in baseModel.layers[-22:]:
+#     layer.trainable = True
+
 baseModel.summary()
+
 model.add(baseModel)
-
 model.add(Dropout(0.5))
-model.add(Dense(128, activation="relu", kernel_regularizer=regularizers.l2(0.02)))
+model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(numClasses, activation='softmax',
-                kernel_regularizer=regularizers.l2(0.02)))
+model.add(Dense(numClasses, activation='softmax'))
 
-for layer in baseModel.layers:
-    layer.trainable = False
 
-for layer in baseModel.layers[-22:]:
-    layer.trainable = True
-
+# plot_model(model, to_file='model_combined.png')
 model.summary()
 
-
-# optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
-#                  epsilon=None, decay=1e-6, amsgrad=False)
-
-optimizer = SGD(learning_rate=0.001)
+optimizer = Adam(0.00001)
+# optimizer = SGD(learning_rate=0.0001)
 
 model.compile(optimizer=optimizer,
               loss="categorical_crossentropy",
               metrics=['accuracy', utils.CalculateF1Score])
 
-# Set a learning rate reductor
-cb_early_stopper = EarlyStopping(monitor='val_loss', patience=4)
 
 # Set a learning rate reductor
-learningRateReduction = ReduceLROnPlateau(
-    monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
+reduce = ReduceLROnPlateau(
+    monitor='val_loss', factor=0.1, patience=5, mode='auto')
+early = EarlyStopping(
+    monitor='val_loss', min_delta=1e-4, patience=10, mode='auto')
 
 # Fit the model
 epochs = 30
@@ -152,7 +155,7 @@ batchSize = 10
 history = model.fit(train_datagen.flow(xTrain, yTrain, batch_size=batchSize),
                     epochs=epochs, validation_data=(xValidate, yValidate),
                     verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
-                    callbacks=[learningRateReduction])
+                    callbacks=[reduce, early])
 
 print('Model metrics name: {0}'.format(model.metrics_names))
 
@@ -166,7 +169,7 @@ lossVal, accuracyVal, f1ScoreVal = model.evaluate(
 utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
-model.save("models/resNet152/ResNet152Model_epochs{0}.h5".format(epochs))
+# model.save("models/resNet50/ResNet50Model_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
