@@ -10,6 +10,7 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.utils import plot_model
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -50,17 +51,17 @@ xTrain, xValidate, yTrain, yValidate = train_test_split(
 
 
 # Display new distribution of data
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-xTrain['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# xTrain['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-xTestSplit['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# xTestSplit['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
-fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-xValidate['cellType'].value_counts().plot(kind='bar', ax=ax1)
-plt.show()
+# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+# xValidate['cellType'].value_counts().plot(kind='bar', ax=ax1)
+# plt.show()
 
 
 xTrain = np.asarray(xTrain['image'].tolist())
@@ -117,7 +118,7 @@ model.add(Dropout(0.25))
 model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
 model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
 model.add(MaxPool2D(pool_size=(2, 2)))
-model.add(Dropout(0.40))
+model.add(Dropout(0.5))
 
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
@@ -125,6 +126,7 @@ model.add(Dropout(0.5))
 model.add(Dense(numClasses, activation='softmax'))
 model.summary()
 
+# plot_model(model, to_file='cnn.png', rankdir='LR')
 
 # Define the optimizer
 optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999,
@@ -144,14 +146,14 @@ datagen = ImageDataGenerator(
     rotation_range=10,
     zoom_range=0.1,
     width_shift_range=0.1,
-    height_shift_range=0.1,
+    height_shift_range=0.1)
 datagen.fit(xTrain)
 
 
 # Fit the model
-epochs=50
-batchSize=10
-history=model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
+epochs = 50
+batchSize = 10
+history = model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
                     epochs=epochs, validation_data=(xValidate, yValidate),
                     verbose=1, steps_per_epoch=xTrain.shape[0] // batchSize,
                     callbacks=[learningRateReduction])
@@ -159,10 +161,10 @@ history=model.fit(datagen.flow(xTrain, yTrain, batch_size=batchSize),
 
 print('Model metrics name: {0}'.format(model.metrics_names))
 
-loss, accuracy, f1Score=model.evaluate(
+loss, accuracy, f1Score = model.evaluate(
     xTest, yTest, verbose=1)
 
-lossVal, accuracyVal, f1ScoreVal=model.evaluate(
+lossVal, accuracyVal, f1ScoreVal = model.evaluate(
     xValidate, yValidate, verbose=1)
 
 
@@ -174,13 +176,13 @@ utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 
 # Model test predictions
-yPred=model.predict(xTest)
+yPred = model.predict(xTest)
 # Transform test predictions classes to one hot vectors
-yPredClasses=np.argmax(yPred, axis=1)
+yPredClasses = np.argmax(yPred, axis=1)
 # Transform test target to one hot vectors
-yTrue=np.argmax(yTest, axis=1)
+yTrue = np.argmax(yTest, axis=1)
 # Create confusion matrix
-confusionMatrix=confusion_matrix(yTrue, yPredClasses)
+confusionMatrix = confusion_matrix(yTrue, yPredClasses)
 # Plot the confusion matrix
 utils.PlotConfusionMatrix(confusionMatrix)
 
