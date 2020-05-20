@@ -43,7 +43,7 @@ train2, testSet = train_test_split(
 
 
 # Add custom nv number to sets
-testSet = pd.concat([testSet, melanocyticNevi[:300]])
+testSet = pd.concat([testSet, melanocyticNevi[:50]])
 validateSet = pd.concat([validateSet, melanocyticNevi[301:1200]])
 train2 = pd.concat([train2, melanocyticNevi[1201:len(melanocyticNevi) - 500]])
 train = pd.concat([train2, mltLesImg])

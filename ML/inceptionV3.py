@@ -114,7 +114,7 @@ numClasses = 7
 model = Sequential()
 baseModel = InceptionV3(include_top=False,  # weights='imagenet',
                         input_shape=imageSize, pooling='avg')
-# plot_model(baseModel, to_file='model_combined.png')
+plot_model(baseModel, to_file='inceptionV3.png')
 
 # for layer in baseModel.layers:
 #     layer.trainable = False
@@ -131,7 +131,7 @@ model.add(Dropout(0.5))
 model.add(Dense(numClasses, activation='softmax'))
 
 
-# plot_model(model, to_file='model_combined.png')
+# plot_model(model, to_file='inceptionV3.png')
 model.summary()
 
 optimizer = Adam(0.00001)
