@@ -1,5 +1,6 @@
 import utils
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 from keras.utils.np_utils import to_categorical
@@ -37,31 +38,54 @@ print('mel: {0}'.format(len(mel)))
 print('vasc: {0}'.format(len(vasc)))
 
 
-# What we know
-features = inputData.drop(columns=['cellTypeId'], axis=1)
-# What we want to predict
-target = inputData['cellTypeId']
+# # What we know
+# features = inputData.drop(columns=['cellTypeId'], axis=1)
+# # What we want to predict
+# target = inputData['cellTypeId']
+
+# xTrainSplit, xTestSplit, yTrainSplit, yTestSplit = train_test_split(
+#     features, target, test_size=0.05, random_state=123)
+
+# xTrain, xValidate, yTrain, yValidate = train_test_split(
+#     xTrainSplit, yTrainSplit, test_size=0.30, random_state=123)
+
+# Split
+trainToSplit, validate = train_test_split(
+    inputData, test_size=0.35, random_state=123)
+
+train, test = train_test_split(
+    trainToSplit, test_size=0.05, random_state=123)
 
 
-xTrainSplit, xTestSplit, yTrainSplit, yTestSplit = train_test_split(
-    features, target, test_size=0.05, random_state=123)
-
-xTrain, xValidate, yTrain, yValidate = train_test_split(
-    xTrainSplit, yTrainSplit, test_size=0.30, random_state=123)
+# Change Test set
+melanocyticNevi = test[test['cellTypeId'] == 4]
+test = test.drop(
+    test[test['cellTypeId'] == 4].iloc[:len(test)].index)
+test = pd.concat([test, melanocyticNevi[:50]])
 
 
 # Display new distribution of data
-# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-# xTrain['cellType'].value_counts().plot(kind='bar', ax=ax1)
-# plt.show()
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+train['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
 
-# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-# xTestSplit['cellType'].value_counts().plot(kind='bar', ax=ax1)
-# plt.show()
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+test['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
 
-# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-# xValidate['cellType'].value_counts().plot(kind='bar', ax=ax1)
-# plt.show()
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+validate['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
+
+
+# Label / feature split
+xTrain = train.drop(columns=['cellTypeId'], axis=1)
+xValidate = validate.drop(columns=['cellTypeId'], axis=1)
+xTestSplit = test.drop(columns=['cellTypeId'], axis=1)
+
+yTrain = train['cellTypeId']
+yValidate = validate['cellTypeId']
+yTestSplit = test['cellTypeId']
 
 
 xTrain = np.asarray(xTrain['image'].tolist())
@@ -87,6 +111,7 @@ xValidate = (xValidate - xValMean)/xValStd
 # xTest = xTest.astype('float32') / 255.
 # xValidate = xValidate.astype('float32') / 255.
 
+
 # Perform one-hot encoding on the labels
 yTrain = to_categorical(yTrain, num_classes=7)
 yTest = to_categorical(yTestSplit, num_classes=7)
@@ -99,13 +124,15 @@ xTrain = xTrain.reshape(xTrain.shape[0], *imageSize)
 xTest = xTest.reshape(xTest.shape[0], *imageSize)
 xValidate = xValidate.reshape(xValidate.shape[0], *imageSize)
 
-print('total features length : {0}'.format(len(features)))
+
+# print('total features length : {0}'.format(len(features)))
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('xTrain length : {0}'.format(len(xTrain)))
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('xValidate length : {0}'.format(len(xValidate)))
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 print('xTest length : {0}'.format(len(xTest)))
+
 
 # CNN model architechture
 # [Conv2D->relu (32)]*2 -> MaxPool2D -> Dropout]
