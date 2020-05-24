@@ -18,9 +18,9 @@ imageSize = (75, 100, 3)
 n_neighbors = 4
 h = .02
 cmap_light = ListedColormap(
-    ['red', 'orange', 'gold', 'green', 'blue', 'purple', 'pink'])
+    ['red', 'orange', 'cyan', 'green', 'blue'])
 cmap_bold = ListedColormap(
-    ['darkred', 'darkorange', 'darkyellow', 'darkGreen', 'darkblue', 'darkpurple', 'darkpink'])
+    ['darkred', 'darkorange', 'c', 'darkgreen', 'darkblue'])
 
 
 def GetFeatureWithVgg(trainSet):
@@ -31,10 +31,10 @@ def GetFeatureWithVgg(trainSet):
         image = row['image']
         label = row['cellTypeId']
 
+        image = image.astype('float32') / 255.
         image = image.reshape(1, *imageSize)
-        image = preprocess_input(image)
-        vgg_features = np.array(model.predict(image))
-        img_features.append(vgg_features.flatten())
+
+        img_features.append(image.flatten())
         labels.append(label)
 
     return (np.array(img_features), np.array(labels))
@@ -61,9 +61,9 @@ neigh.fit(features_list, labels)
 
 # calculate min, max and limits
 x_min, x_max = features_list_test[:, 0].min(
-) - 1, features_list_test[:, 0].max() + 1
+) - 0.1, features_list_test[:, 0].max() + 0.1
 y_min, y_max = features_list_test[:, 1].min(
-) - 1, features_list_test[:, 1].max() + 1
+) - 0.1, features_list_test[:, 1].max() + 0.1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                      np.arange(y_min, y_max, h))
 
@@ -75,10 +75,10 @@ Z = Z.reshape(xx.shape)
 plt.figure()
 plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
 
-# Plot also the training points
+# # Plot also the training points
 plt.scatter(features_list_test[:, 0],
             features_list_test[:, 1], c=labels_test, cmap=cmap_bold)
 plt.xlim(xx.min(), xx.max())
 plt.ylim(yy.min(), yy.max())
-plt.title("7-Class classification (k = %i)" % (n_neighbors))
+plt.title("5-Class classification (k = %i)" % (n_neighbors))
 plt.show()
