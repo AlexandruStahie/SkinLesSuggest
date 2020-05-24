@@ -32,18 +32,25 @@ xTrain = np.asarray(xTrain['image'].tolist())
 xTest = np.asarray(xTest['image'].tolist())
 xValidate = np.asarray(xValidate['image'].tolist())
 
-xTrainMean = np.mean(xTrain)
-xTrainStd = np.std(xTrain)
+# NORM 1
+# xTrainMean = np.mean(xTrain)
+# xTrainStd = np.std(xTrain)
 
-xTestMean = np.mean(xTest)
-xTestStd = np.std(xTest)
+# xTestMean = np.mean(xTest)
+# xTestStd = np.std(xTest)
 
-xValMean = np.mean(xValidate)
-xValStd = np.std(xValidate)
+# xValMean = np.mean(xValidate)
+# xValStd = np.std(xValidate)
 
-xTrain = (xTrain - xTrainMean)/xTrainStd
-xTest = (xTest - xTestMean)/xTestStd
-xValidate = (xValidate - xValMean)/xValStd
+# xTrain = (xTrain - xTrainMean)/xTrainStd
+# xTest = (xTest - xTestMean)/xTestStd
+# xValidate = (xValidate - xValMean)/xValStd
+
+# NORM 2
+xTrain = xTrain.astype('float32') / 255.
+xTest = xTest.astype('float32') / 255.
+xValidate = xValidate.astype('float32') / 255.
+
 
 newImgSize = (100, 100, 3)
 xTrain = xTrain.reshape(xTrain.shape[0], *newImgSize)
@@ -55,7 +62,8 @@ batch_size = 10
 
 input_img = Input(shape=imageSize)
 
-autoencoder = load_model('models/autoEnc/autoencoder.h5', custom_objects={
+# autoencoder = load_model('models/autoEnc/autoencoder.h5', custom_objects={
+autoencoder = load_model('models/autoEncWoNorm/autoencoderWoNorm.h5', custom_objects={
     'CalculateF1Score': utils.CalculateF1Score})
 
 # Model test predictions
@@ -73,8 +81,8 @@ kp, des = orb.compute(img, kp)
 
 print('Key points: {0}'.format(des))
 
-kpimg = cv2.drawKeypoints(
-    yPred[0], kp, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+kpimg = cv.drawKeypoints(
+    yPred[0], kp, None, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 plt.imshow(kpimg), plt.show()
 
 

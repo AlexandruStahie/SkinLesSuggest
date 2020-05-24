@@ -29,12 +29,20 @@ def GetFeatureWithVgg(trainSet):
         image = row['image']
         label = row['cellTypeId']
 
+        # # For Plot
+        # image = image.astype('float32') / 255.
+        # image = image.reshape(1, *imageSize)
+        # img_features.append(image.flatten())
+
         image = image.reshape(1, *imageSize)
         image = preprocess_input(image)
         vgg_features = np.array(model.predict(image))
-        img_features.append(vgg_features.flatten())
-        # img_features.append(image.flatten())
 
+        # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        # print(vgg_features)
+        # break
+
+        img_features.append(vgg_features.flatten())
         labels.append(label)
 
     return (np.array(img_features), np.array(labels))

@@ -68,6 +68,7 @@ xTrain = np.asarray(xTrain['image'].tolist())
 xTest = np.asarray(xTestSplit['image'].tolist())
 xValidate = np.asarray(xValidate['image'].tolist())
 
+# Norm 1
 xTrainMean = np.mean(xTrain)
 xTrainStd = np.std(xTrain)
 
@@ -81,6 +82,10 @@ xTrain = (xTrain - xTrainMean)/xTrainStd
 xTest = (xTest - xTestMean)/xTestStd
 xValidate = (xValidate - xValMean)/xValStd
 
+# Norm 2
+# xTrain = xTrain.astype('float32') / 255.
+# xTest = xTest.astype('float32') / 255.
+# xValidate = xValidate.astype('float32') / 255.
 
 # Perform one-hot encoding on the labels
 yTrain = to_categorical(yTrain, num_classes=7)
