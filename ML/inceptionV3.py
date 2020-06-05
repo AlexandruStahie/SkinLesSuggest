@@ -12,7 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.applications import InceptionV3
+from tensorflow.keras.applications import InceptionV3, Xception
 from tensorflow.keras.utils import plot_model
 
 from sklearn.model_selection import train_test_split
@@ -36,10 +36,10 @@ sgLesImg = sgLesImg.drop(
 
 # Shuffle & Split Dataset
 train1, validateSet = train_test_split(
-    sgLesImg, test_size=0.4, random_state=1234)
+    sgLesImg, test_size=0.35, random_state=1234)
 
 train2, testSet = train_test_split(
-    train1, test_size=0.2, random_state=1234)
+    train1, test_size=0.25, random_state=1234)
 
 
 # Add custom nv number to sets
@@ -50,17 +50,17 @@ train = pd.concat([train2, mltLesImg])
 
 
 # Display new distribution of data
-# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-# train['cellType'].value_counts().plot(kind='bar', ax=ax1)
-# plt.show()
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+train['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
 
-# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-# testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-# plt.show()
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+testSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
 
-# fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-# validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
-# plt.show()
+fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
+validateSet['cellType'].value_counts().plot(kind='bar', ax=ax1)
+plt.show()
 
 
 # Norm images
@@ -112,9 +112,9 @@ print('xTest length : {0}'.format(len(xTest)))
 numClasses = 7
 
 model = Sequential()
-baseModel = InceptionV3(include_top=False,  # weights='imagenet',
-                        input_shape=imageSize, pooling='avg')
-plot_model(baseModel, to_file='inceptionV3.png')
+baseModel = Xception(include_top=False,  # weights='imagenet',
+                     input_shape=imageSize, pooling='avg')
+# plot_model(baseModel, to_file='inceptionV3.png')
 
 # for layer in baseModel.layers:
 #     layer.trainable = False
@@ -134,7 +134,7 @@ model.add(Dense(numClasses, activation='softmax'))
 # plot_model(model, to_file='inceptionV3.png')
 model.summary()
 
-optimizer = Adam(0.00001)
+optimizer = Adam(0.001)
 # optimizer = SGD(learning_rate=0.0001)
 
 model.compile(optimizer=optimizer,
@@ -149,8 +149,8 @@ early = EarlyStopping(
     monitor='val_loss', min_delta=1e-4, patience=10, mode='auto')
 
 # Fit the model
-epochs = 30
-batchSize = 10
+epochs = 40
+batchSize = 12
 
 history = model.fit(train_datagen.flow(xTrain, yTrain, batch_size=batchSize),
                     epochs=epochs, validation_data=(xValidate, yValidate),
@@ -169,7 +169,7 @@ lossVal, accuracyVal, f1ScoreVal = model.evaluate(
 utils.PrintValidationStats(accuracyVal, lossVal, f1ScoreVal)
 utils.PrintTestStats(accuracy, loss, f1Score)
 
-# model.save("models/resNet50/ResNet50Model_epochs{0}.h5".format(epochs))
+model.save("models/xCeption/xCeptionModel_epochs{0}.h5".format(epochs))
 utils.PlotTrainEvolutionHistory(history, 'accuracy', 'val_accuracy')
 
 

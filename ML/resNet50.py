@@ -36,14 +36,14 @@ sgLesImg = sgLesImg.drop(
 
 # Shuffle & Split Dataset
 train1, validateSet = train_test_split(
-    sgLesImg, test_size=0.4, random_state=1234)
+    sgLesImg, test_size=0.35, random_state=1234)
 
 train2, testSet = train_test_split(
-    train1, test_size=0.2, random_state=1234)
+    train1, test_size=0.25, random_state=1234)
 
 
 # Add custom nv number to sets
-testSet = pd.concat([testSet, melanocyticNevi[:50]])
+testSet = pd.concat([testSet, melanocyticNevi[:170]])
 validateSet = pd.concat([validateSet, melanocyticNevi[301:1200]])
 train2 = pd.concat([train2, melanocyticNevi[1201:len(melanocyticNevi) - 500]])
 train = pd.concat([train2, mltLesImg])
@@ -67,6 +67,16 @@ plt.show()
 xTrain = utils.ResNetNormImages(list(train['image']))
 xTest = utils.ResNetNormImages(list(testSet['image']))
 xValidate = utils.ResNetNormImages(list(validateSet['image']))
+
+# Norm images 2
+# xTrain = np.asarray(train['image'].tolist())
+# xTest = np.asarray(testSet['image'].tolist())
+# xValidate = np.asarray(validateSet['image'].tolist())
+
+# xTrain = xTrain.astype('float32') / 255.
+# xTest = xTest.astype('float32') / 255.
+# xValidate = xValidate.astype('float32') / 255.
+
 
 # Features / Target split
 yTrain = np.asarray(train['cellTypeId'])
