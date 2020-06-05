@@ -54,14 +54,13 @@ trainToSplit, validate = train_test_split(
     inputData, test_size=0.35, random_state=123)
 
 train, test = train_test_split(
-    trainToSplit, test_size=0.05, random_state=123)
-
+    trainToSplit, test_size=0.25, random_state=123)
 
 # Change Test set
 melanocyticNevi = test[test['cellTypeId'] == 4]
 test = test.drop(
     test[test['cellTypeId'] == 4].iloc[:len(test)].index)
-test = pd.concat([test, melanocyticNevi[:50]])
+test = pd.concat([test, melanocyticNevi[:150]])
 
 
 # Display new distribution of data

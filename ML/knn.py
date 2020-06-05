@@ -67,6 +67,11 @@ acc = accuracy_score(labels_test, y_kmeans)
 print('Accuracy: {0}'.format(acc))
 
 
+y__trainkmeans = neigh.predict(features_list)
+acc = accuracy_score(labels, y__trainkmeans)
+print('Accuracy train: {0}'.format(acc))
+
+
 # # PLOT
 # # calculate min, max and limits
 # x_min, x_max = features_list_test[:, 0].min(
