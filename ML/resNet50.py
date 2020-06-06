@@ -13,6 +13,7 @@ from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.utils import plot_model
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -122,6 +123,8 @@ model = Sequential()
 baseModel = ResNet50(include_top=False, weights='imagenet',
                      input_shape=imageSize, pooling='avg')
 baseModel.summary()
+plot_model(baseModel, to_file='resnet50.png')
+
 model.add(baseModel)
 
 model.add(Dropout(0.5))
