@@ -123,6 +123,7 @@ baseModel = Xception(include_top=False,  # weights='imagenet',
 #     layer.trainable = True
 
 baseModel.summary()
+plot_model(baseModel, to_file='xception.png')
 
 model.add(baseModel)
 model.add(Dropout(0.5))
@@ -130,8 +131,6 @@ model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(numClasses, activation='softmax'))
 
-
-# plot_model(model, to_file='inceptionV3.png')
 model.summary()
 
 optimizer = Adam(0.001)
