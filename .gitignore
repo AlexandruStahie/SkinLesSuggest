@@ -78,3 +78,6 @@ Server/Flask/modelTestResNet.h5
 ML/models/resNet/ResNet50Model_epochs30.h5
 /Server/.NET Core/ExcelFiles/grTruth.xlsx
 /Server/.NET Core/ExcelFiles/metadata.xlsx
+Server/.NET Core/appsettings.json
+Server/.NET Core/Properties/PublishProfiles/SkinLesSuggest20200314062341 - Web Deploy.pubxml
+Server/.NET Core/Properties/PublishProfiles/SkinLesSuggest20200314062341 - Web Deploy.pubxml.user
