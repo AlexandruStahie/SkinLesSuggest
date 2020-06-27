@@ -54,7 +54,7 @@ trainToSplit, validate = train_test_split(
     inputData, test_size=0.35, random_state=123)
 
 train, test = train_test_split(
-    trainToSplit, test_size=0.25, random_state=123)
+    trainToSplit, test_size=0.15, random_state=123)
 
 # Change Test set
 melanocyticNevi = test[test['cellTypeId'] == 4]
