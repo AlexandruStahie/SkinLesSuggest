@@ -9,5 +9,5 @@
   * The first API was developed using Flask and python, to make use of the pre-trained machine learning model and based on images received, it will return the new predictions. Uploaded to Heroku Cloud
   * The second API is a .NET Core one, developed in C#, which connects the mobile application and the SQL Server Database. The overall architecture is a MVC one and for the database connection it was used the Entity Framework Core library, code first method. Other main libraries that were used: AutoMapper, Swagger UI and Authentication.JwtBearer (for JSON token authentication). Both the SQL Database and this api were uploaded to Azure Cloud.
  
-## Mobile App
+## 3. Mobile App
   Developed using React Native framework. The users have the possibility to login, get skin lesion suggestions, and save the received results in history, in order to check the lesion evolution based on future suggestions.
