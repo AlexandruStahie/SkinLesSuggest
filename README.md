@@ -1,6 +1,6 @@
 # SkinLesSuggest
 
-  The main purpose of this project is to provide suggestions for its users based on the images received with their skin lesions. The suggestions consist in classifying the lesion into 7 distinct categories. Of course, the application also offers the possibility to save the received results in a history table, for later re-evaluation. This was implemented by developing a mobile application. The project is divided into 3 main parts:
+  Master diploma project - The main purpose of this project is to provide suggestions for its users based on the images received with their skin lesions. The suggestions consist in classifying the lesion into 7 distinct categories. Of course, the application also offers the possibility to save the received results in a history table, for later re-evaluation. This was implemented by developing a mobile application. The project is divided into 3 main parts:
 
 ## 1. ML
   The database used for training, validation and testing is available on Kaggle (Skin Cancer MNIST: HAM10000). Here, multiple classification algorithms were tested in order to compare their results and use the best method in the final mobile application for real predictions. Algorithms and other classification methods used: CNN, ResNet50, Xception (& Inception V3), KNN, Anomaly Detection. The main library used is TensorFlow 2.1 and the program was written in python 3.6.
